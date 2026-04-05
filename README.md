@@ -25,16 +25,6 @@ L'application est composée de :
 - Backend (Laravel API)
 - Base de données (MySQL)
 
-Les services communiquent via Docker Compose.
-
-## Structure du projet
-- /backend → Laravel
-- /frontend → Angular
-- /docker → Dockerfiles
-- docker-compose.yml → orchestration
-
-
-
 ## CI/CD
 Pipeline pour :
 - tests
