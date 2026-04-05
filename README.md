@@ -46,7 +46,7 @@ Pipeline pour :
 - Aymen : Frontend
 - Douae : Full Stack
 - Aya : Infrastructure
-- Fatima : Backend API
+- Fatime-zahra : Backend API
 
 ## Documentation
 La documentation sera mise à jour régulièrement.
