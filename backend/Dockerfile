@@ -3,11 +3,10 @@ FROM php:8.2-fpm
 
 # Installer dépendances système
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip \
-    libpng-dev libonig-dev libxml2-dev
+    git curl zip unzip 
+    libpng-dev libonig-dev \ libsqlite3-dev\&&docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd pdo_sqlite
 
-# Installer extensions PHP nécessaires pour Laravel
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -15,17 +14,16 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Définir dossier de travail
 WORKDIR /var/www
 
-# Copier seulement composer (optimisation cache)
-COPY composer.json composer.lock ./
+COPY laravel-backend/ /var/www/
+
 
 # Installer dépendances PHP
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install
 
-# Copier le reste du projet
-COPY . .
 
-# Permissions Laravel
-RUN chmod -R 777 storage bootstrap/cache
+
+
+RUN php artisan key:generate
 
 # Exposer port PHP-FPM
 EXPOSE 9000
