@@ -1,25 +1,34 @@
-# Étape 1 : PHP-FPM
+# Image PHP avec FPM
 FROM php:8.2-fpm
 
+# Installer dépendances système
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpng-dev libonig-dev libxml2-dev
+    git curl zip unzip \
+    libpng-dev libonig-dev libxml2-dev
 
+# Installer extensions PHP nécessaires pour Laravel
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
+# Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Définir dossier de travail
 WORKDIR /var/www
 
+# Copier seulement composer (optimisation cache)
+COPY composer.json composer.lock ./
+
+# Installer dépendances PHP
+RUN composer install --no-dev --optimize-autoloader
+
+# Copier le reste du projet
 COPY . .
 
-RUN composer install
+# Permissions Laravel
+RUN chmod -R 777 storage bootstrap/cache
 
-# Étape 2 : Nginx
-FROM nginx:alpine
+# Exposer port PHP-FPM
+EXPOSE 9000
 
-COPY --from=0 /var/www /var/www
-
-# config nginx (très important)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
+# Lancer PHP-FPM
+CMD ["php-fpm"]
