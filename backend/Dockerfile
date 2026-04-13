@@ -14,11 +14,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Définir dossier de travail
 WORKDIR /var/www
 
-COPY laravel-backend/ /var/www/
 
+COPY laravel-backend/composer.json laravel-backend/composer.lock ./
 
 # Installer dépendances PHP
 RUN composer install
+
+COPY laravel-backend/ /var/www/
 
 
 
