@@ -17,10 +17,11 @@ WORKDIR /var/www
 
 COPY laravel-backend/composer.json laravel-backend/composer.lock ./
 
+
+COPY laravel-backend/ /var/www/
 # Installer dépendances PHP
 RUN composer install
 
-COPY laravel-backend/ /var/www/
 
 
 
