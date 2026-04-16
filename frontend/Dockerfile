@@ -18,7 +18,7 @@ RUN npm run build
 # Étape 2 : Nginx (serveur web)
 FROM nginx:alpine
 
-# Copier les fichiers build Angular (⚠️ adapte le nom du projet)
+# Copier les fichiers build Angular ( adapte le nom du projet)
 COPY --from=build /app/dist/connectme-app/ /usr/share/nginx/html/
 
 # Copier la config Nginx
