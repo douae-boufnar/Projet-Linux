@@ -20,7 +20,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 # Copier tout le projet Laravel
-COPY laravel-backend/ /var/www/
+COPY . /var/www/
 
 # Installer dépendances PHP
 RUN composer install --no-dev --optimize-autoloader
