@@ -19,8 +19,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Définir dossier de travail
 WORKDIR /var/www
 
-# Copier seulement composer (optimisation cache)
-COPY composer.json composer.lock ./
+# Copier tout le projet Laravel
+COPY laravel-backend/ /var/www/
 
 # Installer dépendances PHP
 RUN composer install --no-dev --optimize-autoloader
