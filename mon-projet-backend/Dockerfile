@@ -1,13 +1,17 @@
 # Image PHP avec FPM
 FROM php:8.2-fpm
 
-# Installer dépendances système
+# Installer dépendances système et les extensions php necessaire pour Laravel
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip \
-    libpng-dev libonig-dev libxml2-dev
-
-# Installer extensions PHP nécessaires pour Laravel
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+    git \
+    curl \
+    zip \
+    unzip \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libsqlite3-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd pdo_sqlite
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
