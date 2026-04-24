@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<div class="login-wrapper">
+  <div class="login-card">
+    <h3 class="login-title">Se connecter</h3>
+
+    <!-- Message d'erreur -->
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Champ Email -->
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        [(ngModel)]="email"
+        placeholder="exemple@email.com"
+        class="form-input"
+      />
+    </div>
+
+    <!-- Champ Mot de passe -->
+    <div class="form-group">
+      <label for="password">Mot de passe</label>
+      <input
+        type="password"
+        id="password"
+        [(ngModel)]="password"
+        placeholder="••••••••"
+        class="form-input"
+      />
+    </div>
+
+    <!-- Bouton Connexion -->
+    <button
+      class="btn-login"
+      (click)="login()"
+      [disabled]="loading"
+    >
+      {{ loading ? 'Connexion...' : 'Se connecter' }}
+    </button>
+
+    <!-- Lien vers inscription -->
+    <p class="register-link">
+      Pas encore de compte ? <a routerLink="/register">S'inscrire</a>
+    </p>
+  </div>
+</div>
