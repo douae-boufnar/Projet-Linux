@@ -28,11 +28,15 @@ RUN composer install --no-dev --optimize-autoloader
 # Copier le reste du projet
 COPY . .
 
-# Permissions Laravel
-RUN chmod -R 777 storage bootstrap/cache
+# Permissions Laravel (build time - peut être ecrasé par le volume)
+RUN chmod -R 775 storage bootstrap/cache
+
+# Copier et configurer le script d'entrée
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Exposer port PHP-FPM
 EXPOSE 9000
 
-# Lancer PHP-FPM
-CMD ["php-fpm"]
+# Lancer PHP-FPM via entrypoint (reapplique les permissions au démarrage)
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
