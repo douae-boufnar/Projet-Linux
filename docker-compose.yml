@@ -6,7 +6,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./mon-projet-backend:/var/www
-    command: bash -c "chmod -R 777 storage bootstrap/cache && php-fpm"
+    command: bash -c "chmod -R 777 storage bootstrap/cache && php artisan storage:link --force && php-fpm"
     restart: always
     depends_on:
       - mysql
