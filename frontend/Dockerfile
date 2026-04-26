@@ -19,7 +19,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Copier les fichiers build Angular ( adapte le nom du projet)
-COPY --from=build /app/dist/projetLinux/ /usr/share/nginx/html/
+COPY --from=build /app/dist/projetLinux/browser/ /usr/share/nginx/html/
 
 # Copier la config Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
