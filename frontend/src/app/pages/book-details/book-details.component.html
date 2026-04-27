@@ -1,0 +1,38 @@
+<div class="details-container" *ngIf="livre; else loading">
+  <button class="back-btn" routerLink="/catalog">&larr; Retour au catalogue</button>
+  
+  <div class="error-message" *ngIf="error">{{ error }}</div>
+
+  <div class="book-header" *ngIf="!isReading">
+    <div class="book-cover-large">
+      <img src="https://via.placeholder.com/300x400?text={{ livre.titre | slice:0:15 }}" alt="Couverture de {{ livre.titre }}">
+    </div>
+    
+    <div class="book-info-large">
+      <h1>{{ livre.titre }}</h1>
+      <h2 class="author">Auteur : {{ livre.auteur }}</h2>
+      <span class="category-badge" *ngIf="livre.category">{{ livre.category.nom }}</span>
+      
+      <div class="description-section">
+        <h3>Résumé</h3>
+        <p>{{ livre.description }}</p>
+      </div>
+      
+      <button class="read-btn" (click)="onRead()">Lire ce livre</button>
+      <p class="auth-notice" *ngIf="!isLoggedIn()">Vous serez redirigé vers la connexion.</p>
+    </div>
+  </div>
+
+  <div class="reader-section" *ngIf="isReading && pdfUrl">
+    <div class="reader-header">
+      <h2>Lecture : {{ livre.titre }}</h2>
+      <button class="close-reader-btn" (click)="isReading = false">Fermer la liseuse</button>
+    </div>
+    <iframe [src]="pdfUrl" width="100%" height="800px" style="border: none;"></iframe>
+  </div>
+
+</div>
+
+<ng-template #loading>
+  <div class="loading-state" *ngIf="!error">Chargement des détails...</div>
+</ng-template>

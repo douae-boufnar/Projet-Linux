@@ -15,14 +15,16 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'nom'    => 'required|string|max:255',
+            'prenom' => 'nullable|string|max:255',
+            'email'  => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'nom'    => $request->nom,
+            'prenom' => $request->prenom,
+            'email'  => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
@@ -30,8 +32,8 @@ class AuthController extends Controller
 
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user,
+            'token_type'   => 'Bearer',
+            'user'         => $user,
         ], 201);
     }
 

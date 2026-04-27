@@ -1,0 +1,29 @@
+<div class="catalog-container">
+  <h1>Catalogue des Livres</h1>
+
+  <div class="filter-bar">
+    <label for="categoryFilter">Filtrer par catégorie :</label>
+    <select id="categoryFilter" [(ngModel)]="selectedCategoryId" (change)="onFilterChange()">
+      <option [ngValue]="undefined">Toutes les catégories</option>
+      <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nom }}</option>
+    </select>
+  </div>
+
+  <div class="books-grid">
+    <div *ngFor="let livre of livres" class="book-card" [routerLink]="['/book', livre.id]">
+      <div class="book-cover">
+        <!-- Placeholder for cover image if not provided in DB -->
+        <img src="https://via.placeholder.com/150x200?text={{ livre.titre | slice:0:10 }}" alt="Couverture de {{ livre.titre }}">
+      </div>
+      <div class="book-info">
+        <h3>{{ livre.titre }}</h3>
+        <p class="author">Par {{ livre.auteur }}</p>
+        <p class="category-tag" *ngIf="livre.category">{{ livre.category.nom }}</p>
+      </div>
+    </div>
+    
+    <div *ngIf="livres.length === 0" class="no-books">
+      Aucun livre trouvé dans cette catégorie.
+    </div>
+  </div>
+</div>

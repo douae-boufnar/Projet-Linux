@@ -8,8 +8,14 @@
       <p><strong>Compte créé le :</strong> {{ user?.created_at | date:'medium' }}</p>
     </div>
 
-    <button (click)="logout()" class="btn-primary" style="margin-top: 40px; background-color: #374151;">
-      Se déconnecter
-    </button>
+    <div style="margin-top: 30px; display: flex; gap: 1rem; flex-wrap: wrap;">
+      <a routerLink="/catalog" class="btn-primary" style="background-color: #0284c7; text-decoration: none; display: inline-block;">
+        Accéder au Catalogue des Livres
+      </a>
+      
+      <button (click)="logout()" class="btn-primary" style="background-color: #374151;">
+        Se déconnecter
+      </button>
+    </div>
   </div>
 </div>
