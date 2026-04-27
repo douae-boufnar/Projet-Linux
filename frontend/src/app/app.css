@@ -1,0 +1,104 @@
+:host {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.content {
+  display: flex;
+  background: white;
+  padding: 60px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  max-width: 900px;
+  width: 100%;
+  gap: 60px;
+  align-items: center;
+}
+
+.left-side {
+  flex: 1;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.logo-text {
+  font-size: 32px;
+  font-weight: 700;
+  color: #5d5d5d;
+}
+
+h1 {
+  font-size: 48px;
+  margin: 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.congrats {
+  font-size: 18px;
+  color: #666;
+  margin-top: 20px;
+}
+
+.divider {
+  width: 1px;
+  height: 200px;
+  background-color: #eee;
+}
+
+.right-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.link-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  background: #f0f4f8;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #3b4c63;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.link-card:hover {
+  background: #e2eaf1;
+  transform: translateY(-2px);
+}
+
+.icon {
+  font-size: 14px;
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+    padding: 40px;
+    gap: 40px;
+  }
+  .divider {
+    display: none;
+  }
+}

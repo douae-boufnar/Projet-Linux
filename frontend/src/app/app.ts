@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
-import { BookListComponent } from './pages/book-list/book-list';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [BookListComponent],
-  templateUrl: './app.html'
+  imports: [CommonModule],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
 })
-export class App {}
+export class App {
+  title = 'frontend';
+}
