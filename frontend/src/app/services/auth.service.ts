@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,27 +10,50 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { email, password });
+  register(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, data);
   }
 
-  register(name: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, { name, email, password });
+  login(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, data).pipe(
+      tap((response: any) => {
+        if (response.access_token) {
+          localStorage.setItem('token', response.access_token);
+          localStorage.setItem('user', JSON.stringify(response.user));
+        }
+      })
+    );
   }
 
-  saveToken(token: string): void {
-    localStorage.setItem('token', token);
+  logout(): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.post(`${this.apiUrl}/logout`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).pipe(
+      tap(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      })
+    );
+  }
+
+  getUser(): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.get(`${this.apiUrl}/user`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+  }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
   }
 
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-
-  logout(): void {
-    localStorage.removeItem('token');
+  getStoredUser(): any {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
   }
 }

@@ -5,58 +5,72 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
     /**
-     * Inscription d'un nouvel utilisateur
+     * Create a new user (Registration).
      */
     public function register(Request $request)
     {
-        // Validation des données reçues
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
+            'name' => $request->name,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        // Retourner directement un token après l'inscription
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message'      => 'Compte créé avec succès !',
             'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user,
         ], 201);
     }
 
     /**
-     * Connexion d'un utilisateur existant
+     * Authenticate a user (Login).
      */
     public function login(Request $request)
     {
-        // Validation des données reçues
         $request->validate([
-            'email'    => 'required|email',
+            'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Identifiants incorrects'], 401);
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'message' => 'Invalid login details'
+            ], 401);
         }
+
+        $user = User::where('email', $request->email)->firstOrFail();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message'      => 'Connexion réussie !',
             'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Log the user out (Revoke token).
+     */
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logged out'
         ]);
     }
 }
