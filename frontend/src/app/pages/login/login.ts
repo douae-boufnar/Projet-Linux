@@ -23,11 +23,10 @@ export class LoginComponent {
     this.errorMessage = '';
     this.loading = true;
 
-    this.authService.login(this.email, this.password).subscribe({
-      next: (data) => {
-        this.authService.saveToken(data.access_token);
+    this.authService.login({ email: this.email, password: this.password }).subscribe({
+      next: () => {
         this.loading = false;
-        this.router.navigate(['/books']);
+        this.router.navigate(['/catalog']);
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Erreur de connexion.';
