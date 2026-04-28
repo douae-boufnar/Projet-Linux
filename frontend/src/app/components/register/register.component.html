@@ -1,0 +1,45 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>Inscription</h2>
+    <p class="subtitle">Créez votre compte gratuitement</p>
+
+    <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+      <div class="form-group">
+        <label for="nom">Nom</label>
+        <input type="text" id="nom" name="nom" [(ngModel)]="user.nom" required placeholder="Dupont">
+      </div>
+
+      <div class="form-group">
+        <label for="prenom">Prénom</label>
+        <input type="text" id="prenom" name="prenom" [(ngModel)]="user.prenom" placeholder="Jean">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" [(ngModel)]="user.email" required placeholder="votre@email.com">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" [(ngModel)]="user.password" required placeholder="••••••••">
+      </div>
+
+      <div class="form-group">
+        <label for="password_confirmation">Confirmer le mot de passe</label>
+        <input type="password" id="password_confirmation" name="password_confirmation" [(ngModel)]="user.password_confirmation" required placeholder="••••••••">
+      </div>
+
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+
+      <button type="submit" [disabled]="!registerForm.form.valid || loading" class="btn-primary">
+        {{ loading ? 'Chargement...' : 'S\'inscrire' }}
+      </button>
+    </form>
+
+    <p class="footer-text">
+      Déjà un compte ? <a routerLink="/login">Se connecter</a>
+    </p>
+  </div>
+</div>

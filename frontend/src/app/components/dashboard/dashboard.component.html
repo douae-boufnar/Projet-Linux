@@ -1,0 +1,21 @@
+<div class="dashboard-container">
+  <div class="user-info">
+    <h2>Bienvenue, {{ user?.name }} !</h2>
+    <p class="subtitle">Vous êtes connecté avec l'adresse : {{ user?.email }}</p>
+    
+    <div style="margin-top: 30px;">
+      <p><strong>ID Utilisateur :</strong> {{ user?.id }}</p>
+      <p><strong>Compte créé le :</strong> {{ user?.created_at | date:'medium' }}</p>
+    </div>
+
+    <div style="margin-top: 30px; display: flex; gap: 1rem; flex-wrap: wrap;">
+      <a routerLink="/catalog" class="btn-primary" style="background-color: #0284c7; text-decoration: none; display: inline-block;">
+        Accéder au Catalogue des Livres
+      </a>
+      
+      <button (click)="logout()" class="btn-primary" style="background-color: #374151;">
+        Se déconnecter
+      </button>
+    </div>
+  </div>
+</div>

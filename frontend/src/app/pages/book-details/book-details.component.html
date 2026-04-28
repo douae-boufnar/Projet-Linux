@@ -1,0 +1,88 @@
+<div class="details-page">
+
+  <!-- Back -->
+  <button class="back-btn" routerLink="/catalog">← Retour au catalogue</button>
+
+  <!-- Loading book -->
+  <div *ngIf="loadingBook" class="center-state">
+    <div class="spinner"></div>
+    <p>Chargement du livre...</p>
+  </div>
+
+  <!-- Error loading book -->
+  <div *ngIf="error && loadingBook === false && !livre" class="center-state error-state">
+    <span style="font-size:3rem">⚠️</span>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Book details -->
+  <div *ngIf="livre && !loadingBook" class="card fade-in">
+    <div class="card-inner">
+
+      <!-- LEFT: Cover -->
+      <div class="cover-section">
+        <img
+          [src]="livre.image || 'https://images.unsplash.com/photo-1543005128-818273387013?w=500&q=80'"
+          [alt]="livre.titre"
+          class="cover-img"
+          onerror="this.src='https://images.unsplash.com/photo-1543005128-818273387013?w=500&q=80'"
+        />
+      </div>
+
+      <!-- RIGHT: Info -->
+      <div class="info-section">
+        <span class="category-badge">{{ livre.category?.nom || 'Bibliothèque' }}</span>
+        <h1>{{ livre.titre }}</h1>
+        <p class="author">par <strong>{{ livre.auteur }}</strong></p>
+
+        <div class="rating">
+          <span class="star">★★★★☆</span>
+          <span class="rating-text">4.0 / 5</span>
+        </div>
+
+        <div class="meta-row">
+          <span class="meta-item">📄 Disponible en PDF</span>
+          <span class="meta-item">📅 {{ livre.created_at ? (livre.created_at | date:'yyyy') : '2024' }}</span>
+        </div>
+
+        <div class="section-block">
+          <h3>Description</h3>
+          <p>{{ livre.description }}</p>
+        </div>
+
+        <div class="section-block">
+          <h3>Résumé</h3>
+          <p>{{ livre.description }}</p>
+        </div>
+
+        <!-- Error for PDF -->
+        <div *ngIf="error && livre" class="error-inline">⚠️ {{ error }}</div>
+
+        <!-- Actions -->
+        <div class="actions">
+          <button class="btn-read" (click)="onRead()" [disabled]="loadingPdf">
+            <span *ngIf="!loadingPdf">📖 Lire maintenant</span>
+            <span *ngIf="loadingPdf">Chargement...</span>
+          </button>
+          <button class="btn-download" (click)="onRead()">
+            ⬇️ Télécharger
+          </button>
+        </div>
+
+        <p *ngIf="!isLoggedIn()" class="auth-hint">
+          🔒 <a routerLink="/login">Connectez-vous</a> pour lire ce livre.
+        </p>
+      </div>
+    </div>
+
+    <!-- PDF Viewer -->
+    <div *ngIf="isReading && pdfUrl" class="pdf-section fade-in">
+      <div class="pdf-header">
+        <h3>📖 {{ livre.titre }}</h3>
+        <button class="btn-close" (click)="closePdf()">✕ Fermer</button>
+      </div>
+      <iframe [src]="pdfUrl" width="100%" height="750px" frameborder="0"></iframe>
+    </div>
+  </div>
+
+</div>
