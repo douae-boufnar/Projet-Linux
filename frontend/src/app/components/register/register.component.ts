@@ -12,19 +12,17 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  user = {
-    nom: '',
-    prenom: '',
-    email: '',
-    password: '',
-    password_confirmation: ''
-  };
+  user = { nom: '', prenom: '', email: '', password: '', password_confirmation: '' };
   error: string | null = null;
   loading = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
+    if (this.user.password !== this.user.password_confirmation) {
+      this.error = 'Les mots de passe ne correspondent pas.';
+      return;
+    }
     this.loading = true;
     this.error = null;
     this.authService.register(this.user).subscribe({
@@ -33,9 +31,19 @@ export class RegisterComponent {
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        console.error('Registration error:', err);
-        this.error = err.error?.message || err.message || 'Erreur lors de l\'inscription';
         this.loading = false;
+        if (err.status === 0) {
+          this.error = 'Impossible de contacter le serveur.';
+        } else if (err.status === 422) {
+          const messages = err.error?.errors;
+          if (messages) {
+            this.error = Object.values(messages).flat().join(' ');
+          } else {
+            this.error = err.error?.message || 'Données invalides.';
+          }
+        } else {
+          this.error = err.error?.message || 'Erreur lors de l\'inscription.';
+        }
       }
     });
   }

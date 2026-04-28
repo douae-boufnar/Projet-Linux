@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CatalogService } from '../../services/catalog.service';
 import { Livre } from '../../models/livre.model';
@@ -9,58 +8,75 @@ import { Category } from '../../models/category.model';
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.css'
 })
 export class CatalogComponent implements OnInit {
   livres: Livre[] = [];
   categories: Category[] = [];
-  selectedCategoryId: number | undefined = undefined;
-  selectedCategoryName: string | undefined = undefined;
+  selectedCategory: Category | null = null;
   viewMode: 'categories' | 'books' = 'categories';
+  loading = false;
+  error: string | null = null;
 
   constructor(private catalogService: CatalogService) {}
 
   ngOnInit(): void {
-    this.loadCategories();
-  }
-
-  loadCategories(): void {
-    this.catalogService.getCategories().subscribe(cats => {
-      this.categories = cats;
+    this.loading = true;
+    this.catalogService.getCategories().subscribe({
+      next: (cats) => {
+        this.categories = cats;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Impossible de charger les catégories. Vérifiez la connexion au serveur.';
+        this.loading = false;
+      }
     });
   }
 
-  selectCategory(category: Category): void {
-    this.selectedCategoryId = category.id;
-    this.selectedCategoryName = category.nom;
-    this.loadBooks();
+  selectCategory(cat: Category): void {
+    this.selectedCategory = cat;
     this.viewMode = 'books';
+    this.loading = true;
+    this.livres = [];
+    this.catalogService.getBooks(cat.id).subscribe({
+      next: (books) => {
+        this.livres = books;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Impossible de charger les livres.';
+        this.loading = false;
+      }
+    });
   }
 
-  backToCategories(): void {
+  back(): void {
     this.viewMode = 'categories';
-    this.selectedCategoryId = undefined;
-    this.selectedCategoryName = undefined;
+    this.selectedCategory = null;
     this.livres = [];
   }
 
-  loadBooks(): void {
-    this.catalogService.getBooks(this.selectedCategoryId).subscribe(books => {
-      this.livres = books;
-    });
+  getCategoryColor(index: number): string {
+    const colors = ['#dbeafe', '#d1fae5', '#fef9c3', '#fed7aa', '#ede9fe'];
+    return colors[index % colors.length];
   }
 
-  // Map category names to icons (emojis for simplicity, but styled)
+  getCategoryIconColor(index: number): string {
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#f97316', '#8b5cf6'];
+    return colors[index % colors.length];
+  }
+
   getCategoryIcon(name: string): string {
-    const icons: { [key: string]: string } = {
+    const map: Record<string, string> = {
       'Informatique': '💻',
       'Sciences': '🔬',
       'Littérature': '📚',
       'Histoire': '🏛️',
-      'Economie': '📈'
+      'Economie': '📈',
     };
-    return icons[name] || '📁';
+    return map[name] || '📁';
   }
 }

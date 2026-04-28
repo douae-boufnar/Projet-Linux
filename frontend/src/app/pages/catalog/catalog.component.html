@@ -1,45 +1,75 @@
-<div class="catalog-container">
+<div class="catalog-page">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="center-state">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="center-state error-state">
+    <span style="font-size:3rem">⚠️</span>
+    <p>{{ error }}</p>
+    <button class="btn-retry" (click)="ngOnInit()">Réessayer</button>
+  </div>
+
   <!-- CATEGORIES VIEW -->
-  <div *ngIf="viewMode === 'categories'" class="view-section animate-fade-in">
-    <div class="header-section">
-      <h1>Parcourir par Catégorie</h1>
-      <p class="subtitle">Sélectionnez un domaine pour découvrir nos ouvrages</p>
+  <div *ngIf="!loading && !error && viewMode === 'categories'" class="section fade-in">
+    <div class="page-header">
+      <h1>📚 Bibliothèque</h1>
+      <p>Choisissez une catégorie pour explorer nos ouvrages</p>
+    </div>
+
+    <div *ngIf="categories.length === 0" class="center-state">
+      <span style="font-size:3rem">📭</span>
+      <p>Aucune catégorie disponible pour le moment.</p>
     </div>
 
     <div class="category-grid">
-      <div *ngFor="let cat of categories" class="category-card" (click)="selectCategory(cat)">
-        <div class="category-icon">{{ getCategoryIcon(cat.nom) }}</div>
+      <div
+        *ngFor="let cat of categories; let i = index"
+        class="cat-card"
+        [style.background]="getCategoryColor(i)"
+        (click)="selectCategory(cat)">
+        <div class="cat-icon" [style.color]="getCategoryIconColor(i)">
+          {{ getCategoryIcon(cat.nom) }}
+        </div>
         <h3>{{ cat.nom }}</h3>
-        <span class="explore-text">Explorer →</span>
+        <span class="cat-link" [style.color]="getCategoryIconColor(i)">Explorer →</span>
       </div>
     </div>
   </div>
 
   <!-- BOOKS VIEW -->
-  <div *ngIf="viewMode === 'books'" class="view-section animate-fade-in">
-    <div class="header-section">
-      <button class="btn-back" (click)="backToCategories()">← Retour aux catégories</button>
-      <h1>{{ selectedCategoryName }}</h1>
-      <p class="subtitle">Livres disponibles dans cette catégorie</p>
+  <div *ngIf="!loading && !error && viewMode === 'books'" class="section fade-in">
+    <div class="page-header">
+      <button class="back-btn" (click)="back()">← Retour</button>
+      <h1>{{ selectedCategory?.nom }}</h1>
+      <p>{{ livres.length }} livre(s) disponible(s)</p>
+    </div>
+
+    <div *ngIf="livres.length === 0 && !loading" class="center-state">
+      <span style="font-size:3rem">📭</span>
+      <p>Aucun livre dans cette catégorie.</p>
     </div>
 
     <div class="book-grid">
       <div *ngFor="let livre of livres" class="book-card" [routerLink]="['/book', livre.id]">
-        <div class="book-cover-container">
-          <img [src]="livre.image || 'https://images.unsplash.com/photo-1543005128-818273387013?auto=format&fit=crop&w=300&q=80'" [alt]="livre.titre" class="book-cover">
-          <div class="book-overlay">
-            <span>Voir Détails</span>
-          </div>
+        <div class="cover-wrap">
+          <img
+            [src]="livre.image || 'https://images.unsplash.com/photo-1543005128-818273387013?w=300&q=80'"
+            [alt]="livre.titre"
+            class="cover-img"
+            onerror="this.src='https://images.unsplash.com/photo-1543005128-818273387013?w=300&q=80'"
+          />
+          <div class="cover-overlay">Voir le livre</div>
         </div>
-        <div class="book-info">
+        <div class="book-meta">
           <h3>{{ livre.titre }}</h3>
-          <p class="author">{{ livre.auteur }}</p>
+          <p>{{ livre.auteur }}</p>
         </div>
       </div>
     </div>
-
-    <div *ngIf="livres.length === 0" class="no-results">
-      <p>Aucun livre trouvé dans cette catégorie.</p>
-    </div>
   </div>
+
 </div>

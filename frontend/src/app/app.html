@@ -1,1 +1,8 @@
+<nav class="navbar" *ngIf="showNavbar">
+  <a class="navbar-brand" routerLink="/catalog">📚 BiblioDigitale</a>
+  <div class="navbar-actions">
+    <span style="color: #64748b; font-size:14px;">Bonjour, {{ userName }} 👋</span>
+    <button class="btn-logout" (click)="logout()">Se déconnecter</button>
+  </div>
+</nav>
 <router-outlet></router-outlet>

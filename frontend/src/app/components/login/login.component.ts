@@ -12,10 +12,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  credentials = {
-    email: '',
-    password: ''
-  };
+  credentials = { email: '', password: '' };
   error: string | null = null;
   loading = false;
 
@@ -30,9 +27,14 @@ export class LoginComponent {
         this.router.navigate(['/catalog']);
       },
       error: (err) => {
-        console.error('Login error:', err);
-        this.error = err.error?.message || err.message || 'Erreur de connexion';
         this.loading = false;
+        if (err.status === 0) {
+          this.error = 'Impossible de contacter le serveur. Vérifiez que le backend est démarré.';
+        } else if (err.status === 401) {
+          this.error = 'Email ou mot de passe incorrect.';
+        } else {
+          this.error = err.error?.message || 'Erreur de connexion. Réessayez.';
+        }
       }
     });
   }

@@ -17,11 +17,9 @@ export class BookDetailsComponent implements OnInit {
   livre: Livre | null = null;
   pdfUrl: SafeResourceUrl | null = null;
   isReading = false;
+  loadingPdf = false;
   error: string | null = null;
-
-  isLoggedIn(): boolean {
-    return this.authService.isLoggedIn();
-  }
+  loadingBook = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,64 +30,50 @@ export class BookDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      const id = +idParam;
-      this.catalogService.getBook(id).subscribe({
-        next: (book) => {
-          this.livre = book;
-        },
-        error: (err) => {
-          this.error = 'Erreur lors du chargement des détails du livre.';
-        }
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.catalogService.getBook(+id).subscribe({
+        next: (book) => { this.livre = book; this.loadingBook = false; },
+        error: () => { this.error = 'Livre introuvable.'; this.loadingBook = false; }
       });
     }
   }
 
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
   onRead(): void {
     if (!this.authService.isLoggedIn()) {
-      // Redirect to login if not authenticated
       this.router.navigate(['/login']);
       return;
     }
+    if (!this.livre) return;
 
-    if (this.livre) {
-      this.isReading = true;
-      // Note: In a real app with Sanctum, just using an iframe src might not send the Authorization header.
-      // A common workaround is to fetch the PDF via HttpClient as Blob, then create an object URL.
-      // For simplicity here, we assume the token could be passed via query string or cookies if needed,
-      // but proper way is fetching as Blob. Let's do a simple link approach or iframe.
-      // Since `read` route is protected, we must send token.
-      
-      const token = this.authService.getToken();
-      // Workaround for iframe with auth: we can't easily pass headers to iframe src.
-      // The most robust way is to fetch the blob. But for this demo, we can just 
-      // fetch it and open it or create a blob URL.
-      
-      this.fetchPdfAsBlob(this.livre.id);
-    }
-  }
-
-  fetchPdfAsBlob(bookId: number): void {
-    const url = this.catalogService.getReadUrl(bookId);
+    this.loadingPdf = true;
+    this.error = null;
     const token = this.authService.getToken();
-    
-    fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-    .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.blob();
-    })
-    .then(blob => {
+    const url = this.catalogService.getReadUrl(this.livre.id);
+
+    fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.blob();
+      })
+      .then(blob => {
         const objectUrl = URL.createObjectURL(blob);
         this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
-    })
-    .catch(error => {
-        this.error = 'Impossible de charger le contenu PDF.';
-        this.isReading = false;
-    });
+        this.isReading = true;
+        this.loadingPdf = false;
+      })
+      .catch(() => {
+        this.error = 'Impossible de charger le PDF.';
+        this.loadingPdf = false;
+      });
+  }
+
+  closePdf(): void {
+    this.isReading = false;
+    this.pdfUrl = null;
   }
 }

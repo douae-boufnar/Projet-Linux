@@ -16,6 +16,7 @@ class Livre extends Model
         'titre',
         'auteur',
         'description',
+        'image',
         'contenu',
         'category_id'
     ];
