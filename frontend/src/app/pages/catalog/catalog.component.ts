@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CatalogService } from '../../services/catalog.service';
@@ -20,18 +20,29 @@ export class CatalogComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  constructor(private catalogService: CatalogService) {}
+  constructor(
+    private catalogService: CatalogService,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
     this.loading = true;
+    this.error = null;
     this.catalogService.getCategories().subscribe({
       next: (cats) => {
-        this.categories = cats;
-        this.loading = false;
+        this.ngZone.run(() => {
+          this.categories = cats;
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
       },
       error: (err) => {
-        this.error = 'Impossible de charger les catégories. Vérifiez la connexion au serveur.';
-        this.loading = false;
+        this.ngZone.run(() => {
+          this.error = 'Impossible de charger les catégories. Vérifiez la connexion.';
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
       }
     });
   }
@@ -41,14 +52,22 @@ export class CatalogComponent implements OnInit {
     this.viewMode = 'books';
     this.loading = true;
     this.livres = [];
+    this.cdr.detectChanges();
+
     this.catalogService.getBooks(cat.id).subscribe({
       next: (books) => {
-        this.livres = books;
-        this.loading = false;
+        this.ngZone.run(() => {
+          this.livres = books;
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
       },
       error: () => {
-        this.error = 'Impossible de charger les livres.';
-        this.loading = false;
+        this.ngZone.run(() => {
+          this.error = 'Impossible de charger les livres.';
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
       }
     });
   }
@@ -57,6 +76,7 @@ export class CatalogComponent implements OnInit {
     this.viewMode = 'categories';
     this.selectedCategory = null;
     this.livres = [];
+    this.cdr.detectChanges();
   }
 
   getCategoryColor(index: number): string {

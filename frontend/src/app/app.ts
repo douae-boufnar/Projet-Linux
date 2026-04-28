@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, RouterModule, NavigationEnd } from '@angular/router';
 import { AuthService } from './services/auth.service';
@@ -16,22 +16,42 @@ export class App implements OnInit {
   showNavbar = false;
   userName = '';
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
-        const publicRoutes = ['/login', '/register', '/'];
-        this.showNavbar = !publicRoutes.includes(event.urlAfterRedirects);
-        const user = this.authService.getStoredUser();
-        this.userName = user ? (user.prenom || user.nom || 'Lecteur') : '';
+        this.ngZone.run(() => {
+          const publicRoutes = ['/login', '/register', '/'];
+          this.showNavbar = !publicRoutes.includes(event.urlAfterRedirects);
+          const user = this.authService.getStoredUser();
+          this.userName = user ? (user.prenom || user.nom || 'Lecteur') : '';
+          this.cdr.detectChanges();
+        });
       });
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => {
+        this.ngZone.run(() => {
+          this.router.navigate(['/login']);
+        });
+      },
+      error: () => {
+        this.ngZone.run(() => {
+          // Si le backend échoue, on force la déconnexion locale
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          this.router.navigate(['/login']);
+        });
+      }
+    });
   }
 }

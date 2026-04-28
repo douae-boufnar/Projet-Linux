@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -16,7 +16,12 @@ export class RegisterComponent {
   error: string | null = null;
   loading = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) {}
 
   onSubmit() {
     if (this.user.password !== this.user.password_confirmation) {
@@ -25,25 +30,32 @@ export class RegisterComponent {
     }
     this.loading = true;
     this.error = null;
+    this.cdr.detectChanges();
+
     this.authService.register(this.user).subscribe({
       next: () => {
-        this.loading = false;
-        this.router.navigate(['/login']);
+        this.ngZone.run(() => {
+          this.loading = false;
+          this.router.navigate(['/login']);
+        });
       },
       error: (err) => {
-        this.loading = false;
-        if (err.status === 0) {
-          this.error = 'Impossible de contacter le serveur.';
-        } else if (err.status === 422) {
-          const messages = err.error?.errors;
-          if (messages) {
-            this.error = Object.values(messages).flat().join(' ');
+        this.ngZone.run(() => {
+          this.loading = false;
+          if (err.status === 0) {
+            this.error = 'Impossible de contacter le serveur.';
+          } else if (err.status === 422) {
+            const messages = err.error?.errors;
+            if (messages) {
+              this.error = Object.values(messages).flat().join(' ');
+            } else {
+              this.error = err.error?.message || 'Données invalides.';
+            }
           } else {
-            this.error = err.error?.message || 'Données invalides.';
+            this.error = err.error?.message || 'Erreur lors de l\'inscription.';
           }
-        } else {
-          this.error = err.error?.message || 'Erreur lors de l\'inscription.';
-        }
+          this.cdr.detectChanges();
+        });
       }
     });
   }
