@@ -1,29 +1,45 @@
 <div class="catalog-container">
-  <h1>Catalogue des Livres</h1>
+  <!-- CATEGORIES VIEW -->
+  <div *ngIf="viewMode === 'categories'" class="view-section animate-fade-in">
+    <div class="header-section">
+      <h1>Parcourir par Catégorie</h1>
+      <p class="subtitle">Sélectionnez un domaine pour découvrir nos ouvrages</p>
+    </div>
 
-  <div class="filter-bar">
-    <label for="categoryFilter">Filtrer par catégorie :</label>
-    <select id="categoryFilter" [(ngModel)]="selectedCategoryId" (change)="onFilterChange()">
-      <option [ngValue]="undefined">Toutes les catégories</option>
-      <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nom }}</option>
-    </select>
-  </div>
-
-  <div class="books-grid">
-    <div *ngFor="let livre of livres" class="book-card" [routerLink]="['/book', livre.id]">
-      <div class="book-cover">
-        <!-- Placeholder for cover image if not provided in DB -->
-        <img src="https://via.placeholder.com/150x200?text={{ livre.titre | slice:0:10 }}" alt="Couverture de {{ livre.titre }}">
-      </div>
-      <div class="book-info">
-        <h3>{{ livre.titre }}</h3>
-        <p class="author">Par {{ livre.auteur }}</p>
-        <p class="category-tag" *ngIf="livre.category">{{ livre.category.nom }}</p>
+    <div class="category-grid">
+      <div *ngFor="let cat of categories" class="category-card" (click)="selectCategory(cat)">
+        <div class="category-icon">{{ getCategoryIcon(cat.nom) }}</div>
+        <h3>{{ cat.nom }}</h3>
+        <span class="explore-text">Explorer →</span>
       </div>
     </div>
-    
-    <div *ngIf="livres.length === 0" class="no-books">
-      Aucun livre trouvé dans cette catégorie.
+  </div>
+
+  <!-- BOOKS VIEW -->
+  <div *ngIf="viewMode === 'books'" class="view-section animate-fade-in">
+    <div class="header-section">
+      <button class="btn-back" (click)="backToCategories()">← Retour aux catégories</button>
+      <h1>{{ selectedCategoryName }}</h1>
+      <p class="subtitle">Livres disponibles dans cette catégorie</p>
+    </div>
+
+    <div class="book-grid">
+      <div *ngFor="let livre of livres" class="book-card" [routerLink]="['/book', livre.id]">
+        <div class="book-cover-container">
+          <img [src]="livre.image || 'https://images.unsplash.com/photo-1543005128-818273387013?auto=format&fit=crop&w=300&q=80'" [alt]="livre.titre" class="book-cover">
+          <div class="book-overlay">
+            <span>Voir Détails</span>
+          </div>
+        </div>
+        <div class="book-info">
+          <h3>{{ livre.titre }}</h3>
+          <p class="author">{{ livre.auteur }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="livres.length === 0" class="no-results">
+      <p>Aucun livre trouvé dans cette catégorie.</p>
     </div>
   </div>
 </div>

@@ -17,12 +17,13 @@ export class CatalogComponent implements OnInit {
   livres: Livre[] = [];
   categories: Category[] = [];
   selectedCategoryId: number | undefined = undefined;
+  selectedCategoryName: string | undefined = undefined;
+  viewMode: 'categories' | 'books' = 'categories';
 
   constructor(private catalogService: CatalogService) {}
 
   ngOnInit(): void {
     this.loadCategories();
-    this.loadBooks();
   }
 
   loadCategories(): void {
@@ -31,13 +32,35 @@ export class CatalogComponent implements OnInit {
     });
   }
 
+  selectCategory(category: Category): void {
+    this.selectedCategoryId = category.id;
+    this.selectedCategoryName = category.nom;
+    this.loadBooks();
+    this.viewMode = 'books';
+  }
+
+  backToCategories(): void {
+    this.viewMode = 'categories';
+    this.selectedCategoryId = undefined;
+    this.selectedCategoryName = undefined;
+    this.livres = [];
+  }
+
   loadBooks(): void {
     this.catalogService.getBooks(this.selectedCategoryId).subscribe(books => {
       this.livres = books;
     });
   }
 
-  onFilterChange(): void {
-    this.loadBooks();
+  // Map category names to icons (emojis for simplicity, but styled)
+  getCategoryIcon(name: string): string {
+    const icons: { [key: string]: string } = {
+      'Informatique': '💻',
+      'Sciences': '🔬',
+      'Littérature': '📚',
+      'Histoire': '🏛️',
+      'Economie': '📈'
+    };
+    return icons[name] || '📁';
   }
 }

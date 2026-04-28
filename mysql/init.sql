@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS livres (
     titre VARCHAR(255) NOT NULL,
     auteur VARCHAR(255) NOT NULL,
     description TEXT,
+    image VARCHAR(500),
     contenu VARCHAR(500),
     category_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
