@@ -26,10 +26,12 @@ export class LoginComponent {
     this.error = null;
     this.authService.login(this.credentials).subscribe({
       next: () => {
-        this.router.navigate(['/dashboard']);
+        this.loading = false;
+        this.router.navigate(['/catalog']);
       },
       error: (err) => {
-        this.error = err.error.message || 'Erreur de connexion';
+        console.error('Login error:', err);
+        this.error = err.error?.message || err.message || 'Erreur de connexion';
         this.loading = false;
       }
     });

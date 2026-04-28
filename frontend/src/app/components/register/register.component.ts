@@ -29,10 +29,12 @@ export class RegisterComponent {
     this.error = null;
     this.authService.register(this.user).subscribe({
       next: () => {
+        this.loading = false;
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        this.error = err.error.message || 'Erreur lors de l\'inscription';
+        console.error('Registration error:', err);
+        this.error = err.error?.message || err.message || 'Erreur lors de l\'inscription';
         this.loading = false;
       }
     });
