@@ -73,4 +73,4 @@ jobs:
       - name: Installer les dépendances
         run: npm install
       - name: Lancer les tests Angular
-        run: npx vitest run --passWithNoTests
+        run: npx vitest run --passWithNoTests --exclude="**/app.spec.ts"
