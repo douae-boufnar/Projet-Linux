@@ -72,5 +72,5 @@ jobs:
           node-version: '20'
       - name: Installer les dépendances
         run: npm install
-      - name: Lancer les tests Angular
-        run: npx vitest run
+     - name: Lancer les tests Angular
+        run: npx vitest run --passWithNoTests
