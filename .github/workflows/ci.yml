@@ -1,16 +1,13 @@
 name: CI - Tests Projet-Linux
-
 on:
   push:
     branches: ['new_branch']
   pull_request:
     branches: ['main']
-
 jobs:
   test-laravel:
     name: Tests Laravel
     runs-on: ubuntu-latest
-
     services:
       mysql:
         image: mysql:8.0
@@ -25,27 +22,22 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-
     steps:
       - name: Checkout du code
         uses: actions/checkout@v4
-
       - name: Installer PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: pdo, pdo_mysql, mbstring, bcmath, gd, exif, pcntl
-
       - name: Installer les dépendances
         working-directory: ./mon-projet-backend
         run: composer install --no-interaction --prefer-dist
-
       - name: Configurer l'environnement
         working-directory: ./mon-projet-backend
         run: |
           cp .env.example .env
           php artisan key:generate
-
       - name: Migrer la base de données
         working-directory: ./mon-projet-backend
         env:
@@ -56,7 +48,6 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: ""
         run: php artisan migrate --force
-
       - name: Lancer les tests
         working-directory: ./mon-projet-backend
         env:
@@ -67,26 +58,20 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: ""
         run: php artisan test
-
   test-angular:
     name: Tests Angular
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: ./frontend
-
     steps:
       - name: Checkout du code
         uses: actions/checkout@v4
-
       - name: Installer Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
+          node-version: '20'
       - name: Installer les dépendances
         run: npm install
-
-    - name: Lancer les tests Angular
+      - name: Lancer les tests Angular
         run: npm run test -- --run
