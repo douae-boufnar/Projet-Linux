@@ -88,5 +88,5 @@ jobs:
       - name: Installer les dépendances
         run: npm install
 
-      - name: Lancer les tests Angular
-      run: npm run test -- --run
+    - name: Lancer les tests Angular
+        run: npm run test -- --run
