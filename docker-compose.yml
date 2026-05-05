@@ -6,10 +6,15 @@ services:
     working_dir: /var/www
     volumes:
       - ./mon-projet-backend:/var/www
+<<<<<<< HEAD
+    command: php-fpm
+=======
     command: bash -c "chmod -R 777 storage bootstrap/cache && php artisan storage:link --force && php-fpm"
+>>>>>>> 60c87aebf99203ae9da63b57b5f3092ceb7985d3
     restart: always
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - laravel
 
@@ -44,9 +49,14 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel_db
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - laravel
 
@@ -61,7 +71,8 @@ services:
       PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: root
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - laravel
 
