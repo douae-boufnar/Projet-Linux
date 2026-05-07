@@ -15,6 +15,7 @@ export class App implements OnInit {
   title = 'BiblioDigitale';
   showNavbar = false;
   userName = '';
+  userRole = ''; 
 
   constructor(
     private router: Router,
@@ -30,8 +31,12 @@ export class App implements OnInit {
         this.ngZone.run(() => {
           const publicRoutes = ['/login', '/register', '/'];
           this.showNavbar = !publicRoutes.includes(event.urlAfterRedirects);
+          
           const user = this.authService.getStoredUser();
-          this.userName = user ? (user.prenom || user.nom || 'Lecteur') : '';
+          if (user) {
+            this.userName = user.prenom || user.nom || 'Lecteur';
+            this.userRole = user.role; 
+          }
           this.cdr.detectChanges();
         });
       });
@@ -39,19 +44,12 @@ export class App implements OnInit {
 
   logout(): void {
     this.authService.logout().subscribe({
-      next: () => {
-        this.ngZone.run(() => {
-          this.router.navigate(['/login']);
-        });
-      },
-      error: () => {
-        this.ngZone.run(() => {
-          // Si le backend échoue, on force la déconnexion locale
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          this.router.navigate(['/login']);
-        });
-      }
+      next: () => this.ngZone.run(() => this.router.navigate(['/login'])),
+      error: () => this.ngZone.run(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        this.router.navigate(['/login']);
+      })
     });
   }
 }

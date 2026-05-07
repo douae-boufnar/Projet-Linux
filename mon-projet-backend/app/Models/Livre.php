@@ -11,7 +11,6 @@ class Livre extends Model
 
     protected $table = 'livres';
 
-    // According to init.sql: id, titre, auteur, description, contenu, category_id, created_at
     protected $fillable = [
         'titre',
         'auteur',
@@ -21,7 +20,6 @@ class Livre extends Model
         'category_id'
     ];
 
-    // Disable updated_at since it's not in init.sql
     public $timestamps = false;
 
     public function category()
