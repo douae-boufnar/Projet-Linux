@@ -11,7 +11,8 @@ class AuthTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_register_user()
+    /** @test */
+    public function register_user()
     {
         $response = $this->postJson('/api/register', [
             'nom' => 'Test',
@@ -21,7 +22,6 @@ class AuthTest extends TestCase
             'password_confirmation' => 'password123',
         ]);
 
-        // ton API peut renvoyer 201 OU 200 selon ton controller
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('users', [
@@ -30,14 +30,15 @@ class AuthTest extends TestCase
         ]);
     }
 
-    public function test_login_user()
+    /** @test */
+    public function login_user()
     {
         User::create([
             'nom' => 'Test',
             'prenom' => 'User',
             'email' => 'login@example.com',
             'password' => Hash::make('password123'),
-            'role' => 'user'
+            'role' => 'user',
         ]);
 
         $response = $this->postJson('/api/login', [
@@ -46,14 +47,16 @@ class AuthTest extends TestCase
         ]);
 
         $response->assertStatus(200);
-        $this->assertTrue(true);
+
+        $this->assertArrayHasKey('token', $response->json());
     }
 
-    public function test_login_fail()
+    /** @test */
+    public function login_fail()
     {
         $response = $this->postJson('/api/login', [
-            'email' => 'fake@example.com',
-            'password' => 'wrong',
+            'email' => 'wrong@example.com',
+            'password' => 'wrongpass',
         ]);
 
         $response->assertStatus(401);
