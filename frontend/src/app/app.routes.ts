@@ -4,6 +4,8 @@ import { RegisterComponent } from './components/register/register.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CatalogComponent } from './pages/catalog/catalog.component';
 import { BookDetailsComponent } from './pages/book-details/book-details.component';
+import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
+
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -12,5 +14,7 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'catalog', component: CatalogComponent },
   { path: 'book/:id', component: BookDetailsComponent },
+  { path: 'admin', component: AdminDashboardComponent },
+  { path: 'admin', component: AdminDashboardComponent },
   { path: '**', redirectTo: '/login' }
 ];

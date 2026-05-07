@@ -1,8 +1,17 @@
 <nav class="navbar" *ngIf="showNavbar">
-  <a class="navbar-brand" routerLink="/catalog">📚 BiblioDigitale</a>
+  <a class="navbar-brand" routerLink="/catalog">📚 Babelio</a>
+  
   <div class="navbar-actions">
-    <span style="color: #64748b; font-size:14px;">Bonjour, {{ userName }} 👋</span>
+    <span class="user-welcome">Bonjour, {{ userName }} 👋</span>
+    
+    <a *ngIf="userRole === 'admin'" 
+       routerLink="/admin" 
+       class="btn-admin">
+      ⚙️ Gestion Livres
+    </a>
+
     <button class="btn-logout" (click)="logout()">Se déconnecter</button>
   </div>
 </nav>
+
 <router-outlet></router-outlet>
