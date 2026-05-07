@@ -1,9 +1,9 @@
 name: CI - Tests Projet-Linux
 on:
   push:
-    branches: ['new_branch']
+    branches: ['*']       
   pull_request:
-    branches: ['main']
+    branches: ['*'] 
 jobs:
   test-laravel:
     name: Tests Laravel
