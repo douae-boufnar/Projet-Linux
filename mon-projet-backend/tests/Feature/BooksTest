@@ -1,0 +1,52 @@
+<?php
+
+namespace Tests\Feature;
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+use App\Models\Livre;
+use App\Models\Category;
+
+class BooksTest extends TestCase
+{
+    use RefreshDatabase;
+
+    /** @test */
+    public function test_livres_list()
+    {
+        $category = Category::create([
+            'nom' => 'Informatique'
+        ]);
+
+        Livre::create([
+            'titre' => 'Livre 1',
+            'auteur' => 'Auteur 1',
+            'description' => 'Description 1',
+            'image' => null,
+            'contenu' => null,
+            'category_id' => $category->id
+        ]);
+
+        Livre::create([
+            'titre' => 'Livre 2',
+            'auteur' => 'Auteur 2',
+            'description' => 'Description 2',
+            'image' => null,
+            'contenu' => null,
+            'category_id' => $category->id
+        ]);
+
+        $response = $this->getJson('/api/books');
+
+        $response->assertStatus(200)
+                 ->assertJsonStructure([
+                     '*' => [
+                         'id',
+                         'titre',
+                         'auteur',
+                         'description',
+                         'category_id'
+                     ]
+                 ]);
+    }
+}
