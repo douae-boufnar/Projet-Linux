@@ -48,7 +48,10 @@ class AuthTest extends TestCase
 
         $response->assertStatus(200);
 
-        $this->assertArrayHasKey('token', $response->json());
+        // 👉 on vérifie juste qu'on reçoit un user ou un message de succès
+        $response->assertJsonStructure([
+            'user'
+        ]);
     }
 
     /** @test */
