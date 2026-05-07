@@ -13,11 +13,11 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'nom' => fake()->lastName(),           // "Dupont"
-            'prenom' => fake()->firstName(),        // "Jean"
-            'email' => fake()->unique()->safeEmail(), // "jean@example.com"
-            'password' => Hash::make('password123'),  // Hashé comme dans AuthController
-            'role' => 'user',                       // Valeur par défaut
+            'nom' => $this->faker->lastName(),
+            'prenom' => $this->faker->firstName(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => Hash::make('password123'),
+            'role' => 'user',
         ];
     }
 
@@ -26,8 +26,10 @@ class UserFactory extends Factory
      */
     public function admin(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'role' => 'admin',
-        ]);
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => 'admin',
+            ];
+        });
     }
 }
