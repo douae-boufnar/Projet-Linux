@@ -5,55 +5,65 @@ namespace App\Http\Controllers;
 use App\Models\Livre;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Exception;
 
 class BookController extends Controller
 {
-    // Récupérer la liste des livres (avec filtre optionnel par catégorie)
+    // 1. Liste des livres
     public function index(Request $request)
     {
         $query = Livre::with('category');
-
         if ($request->has('category_id')) {
             $query->where('category_id', $request->category_id);
         }
-
-        $livres = $query->get();
-        return response()->json($livres);
+        return response()->json($query->get());
     }
 
-    // Récupérer les détails d'un livre
+    // 2. Détails d'un livre
     public function show($id)
     {
-        $livre = Livre::with('category')->findOrFail($id);
-        return response()->json($livre);
+        return response()->json(Livre::with('category')->findOrFail($id));
     }
 
-    // Consulter le contenu du livre (lecture en ligne PDF)
+    // 3. Liste des catégories (pour ton menu déroulant)
+    public function categories()
+    {
+        return response()->json(Category::all());
+    }
+
+    // 4. Lecture du contenu (PDF ou texte)
     public function read($id)
     {
         $livre = Livre::findOrFail($id);
-
         if (!$livre->contenu) {
-            return response()->json(['message' => 'Contenu non disponible pour ce livre.'], 404);
+            return response()->json(['message' => 'Contenu non disponible'], 404);
         }
-
-        $path = storage_path('app/public/' . $livre->contenu);
-
-        if (!file_exists($path)) {
-            return response()->json(['message' => 'Fichier introuvable.'], 404);
-        }
-
-        return response()->file($path, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . basename($path) . '"'
-        ]);
+        return response()->json(['contenu' => $livre->contenu]);
     }
 
-    // Récupérer toutes les catégories pour le filtre
-    public function categories()
-    {
-        $categories = Category::all();
-        return response()->json($categories);
+    public function store(Request $request)
+{
+    try {
+        $data = $request->all();
+
+        // FORCE : Si category_id est vide ou invalide, on met NULL
+        if (empty($data['category_id']) || $data['category_id'] == "undefined") {
+            $data['category_id'] = null;
+        }
+
+        $livre = Livre::create($data);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Livre ajouté (catégorie optionnelle)',
+            'livre' => $livre
+        ], 201);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Erreur MySQL : ' . $e->getMessage()
+        ], 500);
     }
+}
 }

@@ -12,11 +12,6 @@ use App\Http\Controllers\AdminController;
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
 */
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -35,4 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Protected route for reading book PDF
     Route::get('/books/{id}/read', [BookController::class, 'read']);
+    
+    // 👇 LA NOUVELLE LIGNE POUR L'ADMINISTRATION 👇
+    Route::post('/books', [BookController::class, 'store']);
 });

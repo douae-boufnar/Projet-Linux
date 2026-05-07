@@ -1,0 +1,95 @@
+.admin-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background-color: #f0f2f5;
+  padding: 2.5rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.admin-card {
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-card {
+  flex: 1;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.list-card {
+  flex: 2;
+  min-width: 500px;
+}
+
+.admin-title {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+/* On réutilise ton style de formulaire exact */
+.form-group { margin-bottom: 1.2rem; }
+.form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  color: #444;
+  font-weight: 500;
+}
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+.form-input:focus { outline: none; border-color: #4f46e5; }
+
+.btn-primary {
+  width: 100%;
+  padding: 0.85rem;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 0.5rem;
+}
+.btn-primary:hover:not(:disabled) { background-color: #4338ca; }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Style du tableau qui correspond à ton design */
+.table-responsive { overflow-x: auto; }
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.admin-table th {
+  background-color: #f8fafc;
+  color: #444;
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 2px solid #ddd;
+}
+.admin-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+.admin-table tr:hover td { background-color: #f8fafc; }
+.font-bold { font-weight: 600; color: #1a1a2e; }
+.text-center { text-align: center; color: #666; font-style: italic; }
