@@ -38,7 +38,9 @@ class BookController extends Controller
         if (!$livre->contenu) {
             return response()->json(['message' => 'Contenu non disponible'], 404);
         }
-        return response()->json(['contenu' => $livre->contenu]);
+        
+        // On renvoie l'URL ou le chemin du contenu
+        return response()->json(['url' => $livre->contenu]);
     }
 
     public function store(Request $request)
