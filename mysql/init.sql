@@ -76,10 +76,10 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `users` (`id`, `nom`, `prenom`, `email`, `password`, `role`, `created_at`) VALUES
-(1, 'Admin', 'Super', 'admin@example.com', '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', 'admin', '2026-04-28 15:09:46'),
-(2, 'reda', 'redaZakaru', 'zakariareda1@gmail.com', '$2y$10$1NFPEa7L0gWEERMOSl1EzOAWdzxXXNReCmZagmOpk3/udkliK8c42', 'user', '2026-04-28 15:21:43'),
-(3, 'redaazerty', 'azerty', 'azerty@gmail.com', '$2y$10$swG8Gpqw7RxTRmdp1fpn2OzZj.6WKIecrkCoUOddCk4kSDY84R6py', 'user', '2026-04-28 18:22:03'),
-(4, 'aya', 'dahbi', 'aya3@gmail', '$2y$10$GjYslnhOYmHvm73Nt5JYV.oiB39YalT.cGDEDymerAOIjYjFnVW/S', 'user', '2026-04-30 10:53:58');
+(1, 'Admin', 'Super', 'admin@example.com', 'admin123', 'admin', '2026-04-28 15:09:46'),
+(2, 'reda', 'redaZakaru', 'zakariareda1@gmail.com', 'reda123', 'user', '2026-04-28 15:21:43'),
+(3, 'redaazerty', 'azerty', 'azerty@gmail.com', 'azerty123', 'user', '2026-04-28 18:22:03'),
+(4, 'aya', 'dahbi', 'aya3@gmail', 'aya123', 'user', '2026-04-30 10:53:58');
 
 -- Table personal_access_tokens
 CREATE TABLE `personal_access_tokens` (

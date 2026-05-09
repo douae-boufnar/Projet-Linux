@@ -25,7 +25,7 @@ class AuthController extends Controller
             'nom'    => $request->nom,
             'prenom' => $request->prenom,
             'email'  => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -47,13 +47,15 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        $user = User::where('email', $request->email)
+                    ->where('password', $request->password)
+                    ->first();
+
+        if (!$user) {
             return response()->json([
                 'message' => 'Invalid login details'
             ], 401);
         }
-
-        $user = User::where('email', $request->email)->firstOrFail();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
