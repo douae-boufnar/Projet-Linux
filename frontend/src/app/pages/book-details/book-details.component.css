@@ -144,46 +144,40 @@
   margin-top: 8px;
 }
 
-.btn-read {
-  flex: 1;
-  padding: 14px 20px;
-  background: #6366f1;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  transition: all 0.25s;
-}
-
-.btn-read:hover:not(:disabled) {
-  background: #4f46e5;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(99,102,241,0.45);
-}
-
-.btn-read:disabled { opacity: 0.65; cursor: not-allowed; }
-
 .btn-download {
-  flex: 1;
-  padding: 14px 20px;
-  background: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #10b981, #059669);
   color: white;
   border: none;
-  border-radius: 12px;
+  padding: 18px 36px;
+  border-radius: 14px;
+  font-size: 1.2rem;
   font-weight: 700;
-  font-size: 1rem;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+  width: 100%;
   font-family: 'Inter', sans-serif;
-  transition: all 0.25s;
 }
 
-.btn-download:hover {
-  background: #059669;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(16,185,129,0.45);
+.btn-download:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #34d399, #10b981);
+}
+
+.btn-download:active {
+  transform: translateY(-1px);
+}
+
+.btn-download:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* ── AUTH HINT ── */
@@ -207,24 +201,35 @@
   font-size: 0.9rem;
 }
 
-/* ── PDF VIEWER ── */
+/* ── PDF VIEWER (FULL SCREEN) ── */
 .pdf-section {
-  border-top: 2px solid #f1f5f9;
-  background: #f8fafc;
-  padding: 24px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.95);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
 }
 
 .pdf-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  padding: 16px 32px;
+  background: #1e293b;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .pdf-header h3 {
-  font-size: 1.1rem;
-  color: #1e293b;
+  font-size: 1.2rem;
+  color: white;
   font-weight: 700;
+  margin: 0;
 }
 
 .btn-close {
@@ -236,6 +241,13 @@
   cursor: pointer;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
+}
+.btn-close:hover { background: #dc2626; }
+
+.pdf-section iframe {
+  flex: 1;
+  border: none;
+  width: 100%;
 }
 
 /* ── STATES ── */
@@ -275,4 +287,4 @@
 
 /* ── ANIMATION ── */
 .fade-in { animation: fadeIn 0.5s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

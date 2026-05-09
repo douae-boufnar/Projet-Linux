@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CatalogService } from '../../services/catalog.service';
@@ -20,60 +20,82 @@ export class BookDetailsComponent implements OnInit {
   loadingPdf = false;
   error: string | null = null;
   loadingBook = true;
+  bookId: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private catalogService: CatalogService,
     private authService: AuthService,
     private router: Router,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.catalogService.getBook(+id).subscribe({
-        next: (book) => { this.livre = book; this.loadingBook = false; },
-        error: () => { this.error = 'Livre introuvable.'; this.loadingBook = false; }
-      });
-    }
+    this.route.paramMap.subscribe(params => {
+      this.bookId = params.get('id');
+      console.log('Paramètres de route reçus, ID:', this.bookId);
+      
+      if (this.bookId && this.bookId !== 'undefined') {
+        this.loadingBook = true;
+        this.cdr.detectChanges(); // Forcer l'affichage du spinner
+
+        this.catalogService.getBook(+this.bookId).subscribe({
+          next: (book) => { 
+            this.ngZone.run(() => {
+              this.livre = book; 
+              this.loadingBook = false; 
+              this.cdr.detectChanges(); // Forcer l'affichage du livre
+            });
+          },
+          error: (err) => { 
+            this.ngZone.run(() => {
+              console.error('Erreur API:', err);
+              this.error = 'Impossible de trouver ce livre.'; 
+              this.loadingBook = false; 
+              this.cdr.detectChanges();
+            });
+          }
+        });
+      } else {
+        this.error = 'Erreur : Aucun identifiant de livre trouvé.';
+        this.loadingBook = false;
+      }
+    });
   }
 
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
 
-  onRead(): void {
-    if (!this.authService.isLoggedIn()) {
-      this.router.navigate(['/login']);
-      return;
-    }
-    if (!this.livre) return;
-
+  downloadPdf(): void {
+    if (!this.livre || !this.livre.contenu) return;
+    
+    const fileUrl = this.livre.contenu;
+    const fileName = `${this.livre.titre.replace(/ /g, '_')}.pdf`;
+    
     this.loadingPdf = true;
-    this.error = null;
-    const token = this.authService.getToken();
-    const url = this.catalogService.getReadUrl(this.livre.id);
-
-    fetch(url, { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.blob();
-      })
+    
+    // On force le téléchargement en créant un lien invisible
+    fetch(fileUrl)
+      .then(response => response.blob())
       .then(blob => {
-        const objectUrl = URL.createObjectURL(blob);
-        this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
-        this.isReading = true;
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
         this.loadingPdf = false;
       })
-      .catch(() => {
-        this.error = 'Impossible de charger le PDF.';
+      .catch(err => {
+        console.error('Erreur de téléchargement:', err);
+        // Fallback simple si le blob échoue (CORS)
+        window.open(fileUrl, '_blank');
         this.loadingPdf = false;
       });
-  }
-
-  closePdf(): void {
-    this.isReading = false;
-    this.pdfUrl = null;
   }
 }

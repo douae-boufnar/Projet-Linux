@@ -6,7 +6,7 @@
   <!-- Loading book -->
   <div *ngIf="loadingBook" class="center-state">
     <div class="spinner"></div>
-    <p>Chargement du livre...</p>
+    <p>Chargement du livre (ID: {{ bookId }})...</p>
   </div>
 
   <!-- Error loading book -->
@@ -21,12 +21,9 @@
 
       <!-- LEFT: Cover -->
       <div class="cover-section">
-        <img
-          [src]="livre.image || 'https://images.unsplash.com/photo-1543005128-818273387013?w=500&q=80'"
-          [alt]="livre.titre"
-          class="cover-img"
-          onerror="this.src='https://images.unsplash.com/photo-1543005128-818273387013?w=500&q=80'"
-        />
+        <img [src]="livre.image || 'https://images.unsplash.com/photo-1543005128-818273387013?w=500&q=80'"
+          [alt]="livre.titre" class="cover-img"
+          onerror="this.src='https://images.unsplash.com/photo-1543005128-818273387013?w=500&q=80'" />
       </div>
 
       <!-- RIGHT: Info -->
@@ -60,28 +57,16 @@
 
         <!-- Actions -->
         <div class="actions">
-          <button class="btn-read" (click)="onRead()" [disabled]="loadingPdf">
-            <span *ngIf="!loadingPdf">📖 Lire maintenant</span>
-            <span *ngIf="loadingPdf">Chargement...</span>
-          </button>
-          <button class="btn-download" (click)="onRead()">
-            ⬇️ Télécharger
+          <button class="btn-download" (click)="downloadPdf()" [disabled]="loadingPdf">
+            <span *ngIf="!loadingPdf">⬇️ Télécharger le livre (PDF)</span>
+            <span *ngIf="loadingPdf">Préparation du téléchargement...</span>
           </button>
         </div>
 
         <p *ngIf="!isLoggedIn()" class="auth-hint">
-          🔒 <a routerLink="/login">Connectez-vous</a> pour lire ce livre.
+          🔒 <a routerLink="/login">Connectez-vous</a> pour télécharger ce livre.
         </p>
       </div>
-    </div>
-
-    <!-- PDF Viewer -->
-    <div *ngIf="isReading && pdfUrl" class="pdf-section fade-in">
-      <div class="pdf-header">
-        <h3>📖 {{ livre.titre }}</h3>
-        <button class="btn-close" (click)="closePdf()">✕ Fermer</button>
-      </div>
-      <iframe [src]="pdfUrl" width="100%" height="750px" frameborder="0"></iframe>
     </div>
   </div>
 
