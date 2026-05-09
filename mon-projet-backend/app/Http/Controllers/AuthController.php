@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    /**
-     * Create a new user (Registration).
-     */
+    
     public function register(Request $request)
     {
         $request->validate([
