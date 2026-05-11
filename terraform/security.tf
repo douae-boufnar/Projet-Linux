@@ -1,6 +1,6 @@
 resource "aws_security_group" "projet_linux_sg" {
   name        = "${var.project_name}-sg"
-  description = "Security Group pour Projet Linux"
+  description = "Security Group pour Projet Linux (Reverse Proxy Nginx)"
 
   # SSH - accès admin
   ingress {
@@ -11,36 +11,9 @@ resource "aws_security_group" "projet_linux_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Angular Frontend
+  # HTTP - Trafic Web Principal (Nginx Reverse Proxy)
   ingress {
-    description = "Angular Frontend"
-    from_port   = 4200
-    to_port     = 4200
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Laravel Backend via Nginx
-  ingress {
-    description = "Laravel Backend"
-    from_port   = 8000
-    to_port     = 8000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # phpMyAdmin - restreint (à changer avec votre IP)
-  ingress {
-    description = "phpMyAdmin"
-    from_port   = 8081
-    to_port     = 8081
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # HTTP
-  ingress {
-    description = "HTTP"
+    description = "HTTP (Nginx Reverse Proxy)"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"

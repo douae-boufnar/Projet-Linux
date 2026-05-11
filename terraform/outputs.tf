@@ -13,12 +13,7 @@ output "ssh_command" {
   value       = "ssh -i ~/.ssh/projet-linux-key ubuntu@${aws_eip.projet_linux_eip.public_ip}"
 }
 
-output "frontend_url" {
-  description = "URL du frontend Angular"
-  value       = "http://${aws_eip.projet_linux_eip.public_ip}:4200"
-}
-
-output "backend_url" {
-  description = "URL du backend Laravel"
-  value       = "http://${aws_eip.projet_linux_eip.public_ip}:8000"
+output "app_url" {
+  description = "URL publique de l'application (Nginx Reverse Proxy)"
+  value       = "http://${aws_eip.projet_linux_eip.public_ip}"
 }

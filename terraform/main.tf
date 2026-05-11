@@ -11,18 +11,15 @@ provider "aws" {
   region = var.aws_region
 }
 
-# Key Pair SSH
-resource "aws_key_pair" "projet_linux_key" {
-  key_name   = var.key_name
-  public_key = file("~/.ssh/projet-linux-key.pub")
-}
+
 
 # Instance EC2
 resource "aws_instance" "projet_linux_server" {
-  ami                    = var.ami_id
+  ami                    = var.aws_ami_id
   instance_type          = var.instance_type
-  key_name               = aws_key_pair.projet_linux_key.key_name
+  aws_key_pair = "terraform-ec2"
   vpc_security_group_ids = [aws_security_group.projet_linux_sg.id]
+  user_data_replace_on_change = true
 
   # Stockage 20 GB gp2 (Free Tier)
   root_block_device {
@@ -30,15 +27,29 @@ resource "aws_instance" "projet_linux_server" {
     volume_type = "gp2"
   }
 
-  # Script d'installation automatique de Docker au démarrage
+  # Script d'installation automatique de Docker, Git et lancement du projet
   user_data = <<-EOF
     #!/bin/bash
+    # 1. Mise à jour et installation des outils
     apt-get update -y
     apt-get install -y docker.io git
     systemctl enable docker
     systemctl start docker
     usermod -aG docker ubuntu
     apt-get install -y docker-compose-plugin
+
+    # 2. Récupération du code
+    cd /home/ubuntu
+    git clone ${var.github_repo_url} projet
+    cd projet
+
+    # 3. Lancement de l'application
+    # On attend que Docker soit prêt
+    sleep 10
+    docker compose up -d --build
+
+    # Fix permissions
+    chown -R ubuntu:ubuntu /home/ubuntu/projet
   EOF
 
   tags = {
@@ -46,7 +57,7 @@ resource "aws_instance" "projet_linux_server" {
   }
 }
 
-# IP publique fixe
+# IP publique fixe (Elastic IP)
 resource "aws_eip" "projet_linux_eip" {
   instance = aws_instance.projet_linux_server.id
   domain   = "vpc"
