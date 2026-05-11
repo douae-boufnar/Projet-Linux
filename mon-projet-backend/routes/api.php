@@ -8,15 +8,11 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\InteractionController;
 use App\Http\Controllers\AdminController;
 
-<<<<<<< HEAD
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
 */
-=======
-
->>>>>>> edc6ae123f6ee719dc2255b792ecc13f0093a1b3
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
