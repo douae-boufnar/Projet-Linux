@@ -18,6 +18,7 @@ resource "aws_instance" "projet_linux_server" {
   ami                    = var.aws_ami_id
   instance_type          = var.instance_type
   aws_key_pair = "terraform-ec2"
+  associate_public_ip_address=true
   vpc_security_group_ids = [aws_security_group.projet_linux_sg.id]
   user_data_replace_on_change = true
 
@@ -57,12 +58,4 @@ resource "aws_instance" "projet_linux_server" {
   }
 }
 
-# IP publique fixe (Elastic IP)
-resource "aws_eip" "projet_linux_eip" {
-  instance = aws_instance.projet_linux_server.id
-  domain   = "vpc"
 
-  tags = {
-    Name = "${var.project_name}-eip"
-  }
-}
