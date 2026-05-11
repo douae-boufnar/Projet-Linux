@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class DataService {
   // L'adresse de ton API Laravel qu'on a testée tout à l'heure
-  private apiUrl = 'http://localhost:8000/api/admin/donnees';
+  private apiUrl = '/api/admin/donnees';
 
   constructor(private http: HttpClient) { }
 

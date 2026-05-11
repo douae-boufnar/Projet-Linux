@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BookService {
-  private apiUrl = 'http://localhost:8000/api/livres'; // L'adresse de ton backend Laravel
+  private apiUrl = '/api/livres'; // L'adresse de ton backend Laravel
 
   constructor(private http: HttpClient) { }
 

@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class AdminDashboardComponent implements OnInit {
   // L'URL de ton backend Laravel (Docker)
-  apiUrl = 'http://localhost:8000/api/books'; 
+  apiUrl = '/api/books'; 
   
   livres: any[] = [];
   loading = false;
