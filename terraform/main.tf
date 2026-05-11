@@ -9,6 +9,7 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
+  profile = "reda_dev"
 }
 
 
@@ -17,7 +18,7 @@ provider "aws" {
 resource "aws_instance" "projet_linux_server" {
   ami                    = var.aws_ami_id
   instance_type          = var.instance_type
-  aws_key_pair = "terraform-ec2"
+  key_name               = "terraform-ec2"
   associate_public_ip_address=true
   vpc_security_group_ids = [aws_security_group.projet_linux_sg.id]
   user_data_replace_on_change = true

@@ -23,5 +23,5 @@ variable "project_name" {
 
 variable "github_repo_url" {
   description = "URL du dépôt GitHub du projet"
-  default     = "https://github.com/ton-utilisateur/ton-projet.git"
+  default     = "https://github.com/douae-boufnar/Projet-Linux"
 }
