@@ -93,3 +93,62 @@
 .admin-table tr:hover td { background-color: #f8fafc; }
 .font-bold { font-weight: 600; color: #1a1a2e; }
 .text-center { text-align: center; color: #666; font-style: italic; }
+
+.form-divider {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+}
+
+.section-subtitle {
+  color: #2c3e50;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.field-hint {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+}
+
+.text-blue { color: #4f46e5; font-weight: 600; text-decoration: none; }
+.text-blue:hover { text-decoration: underline; }
+.text-gray { color: #999; }
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-secondary {
+  flex: 1;
+  padding: 0.85rem;
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit, .btn-delete {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-edit:hover { background: #e0e7ff; }
+.btn-delete:hover { background: #fee2e2; }

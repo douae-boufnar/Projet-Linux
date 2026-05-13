@@ -21,6 +21,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/books', [BookController::class, 'index']);
 Route::get('/books/{id}', [BookController::class, 'show']);
 Route::get('/categories', [BookController::class, 'categories']);
+Route::post('/books', [BookController::class, 'store']);
+Route::post('/books/{id}', [BookController::class, 'update']); // On utilise POST pour gérer les fichiers facilement
+Route::delete('/books/{id}', [BookController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -30,7 +33,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Protected route for reading book PDF
     Route::get('/books/{id}/read', [BookController::class, 'read']);
-    
-    // 👇 LA NOUVELLE LIGNE POUR L'ADMINISTRATION 👇
-    Route::post('/books', [BookController::class, 'store']);
 });

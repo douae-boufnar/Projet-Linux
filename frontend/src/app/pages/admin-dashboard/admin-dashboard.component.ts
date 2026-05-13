@@ -22,15 +22,31 @@ export class AdminDashboardComponent implements OnInit {
     titre: '',
     auteur: '',
     description: '',
-    image: '',
-    contenu: '',
-    category_id: 1 
+    category_id: 1,
+    image_url: '',
+    pdf_url: ''
   };
+
+  selectedImage: File | null = null;
+  selectedPdf: File | null = null;
+
+  isEditing = false;
+  editingBookId: number | null = null;
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.loadBooks();
+  }
+
+  // Gérer la sélection de l'image
+  onImageSelected(event: any) {
+    this.selectedImage = event.target.files[0];
+  }
+
+  // Gérer la sélection du PDF
+  onPdfSelected(event: any) {
+    this.selectedPdf = event.target.files[0];
   }
 
   // Récupérer la liste depuis la base de données
@@ -46,30 +62,91 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   // Envoyer le nouveau livre à la base de données
-  addBook() {
+  submitForm() {
     if (!this.newBook.titre || !this.newBook.auteur) {
-      alert('Veuillez remplir le titre et l\'auteur');
+      alert('Veuillez remplir au moins le titre et l\'auteur.');
       return;
     }
 
     this.loading = true;
-    this.http.post(this.apiUrl, this.newBook).subscribe({
+
+    // Utilisation de FormData pour envoyer les fichiers
+    const formData = new FormData();
+    formData.append('titre', this.newBook.titre);
+    formData.append('auteur', this.newBook.auteur);
+    formData.append('description', this.newBook.description);
+    formData.append('category_id', this.newBook.category_id.toString());
+    formData.append('image_url', this.newBook.image_url);
+    formData.append('pdf_url', this.newBook.pdf_url);
+    
+    if (this.selectedImage) {
+      formData.append('image', this.selectedImage);
+    }
+    
+    if (this.selectedPdf) {
+      formData.append('contenu', this.selectedPdf);
+    }
+
+    const url = this.isEditing ? `${this.apiUrl}/${this.editingBookId}` : this.apiUrl;
+    
+    this.http.post(url, formData).subscribe({
       next: (res: any) => {
-        alert('Livre ajouté avec succès !');
-        this.loadBooks(); // On rafraîchit le tableau
-        this.resetForm(); // On vide les cases
+        alert(this.isEditing ? 'Livre mis à jour !' : 'Livre ajouté !');
+        this.loadBooks();
+        this.cancelEdit();
         this.loading = false;
       },
       error: (err) => {
-        console.error('Erreur lors de l\'ajout', err);
-        alert('Erreur lors de l\'ajout du livre');
+        console.error('Erreur', err);
+        const errorMsg = err.error?.message || 'Erreur inconnue';
+        alert('Erreur : ' + errorMsg);
         this.loading = false;
       }
     });
   }
 
+  editBook(book: any) {
+    this.isEditing = true;
+    this.editingBookId = book.id;
+    this.newBook = {
+      titre: book.titre,
+      auteur: book.auteur,
+      description: book.description || '',
+      category_id: book.category_id,
+      image_url: book.image,
+      pdf_url: book.contenu
+    };
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  cancelEdit() {
+    this.isEditing = false;
+    this.editingBookId = null;
+    this.resetForm();
+  }
+
+  deleteBook(id: number) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce livre ?')) return;
+
+    this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+      next: () => {
+        alert('Livre supprimé !');
+        this.loadBooks();
+      },
+      error: (err) => {
+        console.error('Erreur suppression', err);
+        alert('Erreur lors de la suppression');
+      }
+    });
+  }
+
   resetForm() {
-    this.newBook = { titre: '', auteur: '', description: '', image: '', contenu: '', category_id: 1 };
+    this.newBook = { titre: '', auteur: '', description: '', category_id: 1, image_url: '', pdf_url: '' };
+    this.selectedImage = null;
+    this.selectedPdf = null;
+    // Note: les inputs file ne peuvent pas être reset facilement via ngModel, 
+    // il faudrait une référence locale si on voulait vraiment les vider visuellement.
   }
 
   getCategoryName(id: number | string): string {

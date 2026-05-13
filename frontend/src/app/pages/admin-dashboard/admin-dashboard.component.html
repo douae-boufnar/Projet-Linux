@@ -1,7 +1,7 @@
 <div class="admin-wrapper">
   
   <div class="admin-card form-card">
-    <h3 class="admin-title">Ajouter un livre</h3>
+    <h3 class="admin-title">{{ isEditing ? 'Modifier le livre #' + editingBookId : 'Ajouter un livre' }}</h3>
 
     <div class="form-group">
       <label for="titre">Titre du livre</label>
@@ -29,9 +29,43 @@
       <textarea id="description" [(ngModel)]="newBook.description" placeholder="Résumé du livre..." class="form-input" rows="3"></textarea>
     </div>
 
-    <button class="btn-primary" (click)="addBook()" [disabled]="loading">
-      {{ loading ? 'Ajout en cours...' : 'Ajouter le livre' }}
-    </button>
+    <hr class="form-divider" />
+    <h4 class="section-subtitle">Image de couverture (Obligatoire)</h4>
+    <p class="field-hint">Choisissez un fichier OU entrez une URL directe</p>
+
+    <div class="form-group">
+      <label for="image">📁 Sélectionner un fichier image</label>
+      <input type="file" id="image" (change)="onImageSelected($event)" class="form-input" accept="image/*" />
+    </div>
+    
+    <div class="form-group">
+      <label for="image_url">🔗 OU Coller une URL d'image</label>
+      <input type="text" id="image_url" [(ngModel)]="newBook.image_url" placeholder="https://example.com/image.jpg" class="form-input" />
+    </div>
+
+    <hr class="form-divider" />
+    <h4 class="section-subtitle">Contenu du livre (PDF Obligatoire)</h4>
+    <p class="field-hint">Le fichier qui sera téléchargé par les utilisateurs</p>
+
+    <div class="form-group">
+      <label for="pdf">📁 Sélectionner un fichier PDF</label>
+      <input type="file" id="pdf" (change)="onPdfSelected($event)" class="form-input" accept="application/pdf" />
+    </div>
+
+    <div class="form-group">
+      <label for="pdf_url">🔗 OU Coller une URL de PDF</label>
+      <input type="text" id="pdf_url" [(ngModel)]="newBook.pdf_url" placeholder="https://example.com/document.pdf" class="form-input" />
+    </div>
+
+    <div class="btn-group">
+      <button class="btn-primary" (click)="submitForm()" [disabled]="loading">
+        {{ loading ? 'Action en cours...' : (isEditing ? '💾 Enregistrer les modifications' : '🚀 Ajouter le livre au catalogue') }}
+      </button>
+
+      <button *ngIf="isEditing" class="btn-secondary" (click)="cancelEdit()">
+        Annuler
+      </button>
+    </div>
   </div>
 
   <div class="admin-card list-card">
@@ -42,17 +76,33 @@
         <thead>
           <tr>
             <th>ID</th>
+            <th>Image</th>
             <th>Titre</th>
             <th>Auteur</th>
             <th>Catégorie</th>
+            <th>PDF</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let livre of livres">
             <td>#{{ livre.id }}</td>
+            <td>
+              <img [src]="livre.image" alt="couverture" style="width: 40px; height: 50px; object-fit: cover; border-radius: 4px;" *ngIf="livre.image">
+            </td>
             <td class="font-bold">{{ livre.titre }}</td>
             <td>{{ livre.auteur }}</td>
             <td>{{ getCategoryName(livre.category_id) }}</td>
+            <td>
+              <a [href]="livre.contenu" target="_blank" *ngIf="livre.contenu" class="text-blue">Voir PDF</a>
+              <span *ngIf="!livre.contenu" class="text-gray">N/A</span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn-edit" (click)="editBook(livre)">✏️</button>
+                <button class="btn-delete" (click)="deleteBook(livre.id)">🗑️</button>
+              </div>
+            </td>
           </tr>
           <tr *ngIf="livres.length === 0">
             <td colspan="4" class="text-center">Aucun livre disponible.</td>
