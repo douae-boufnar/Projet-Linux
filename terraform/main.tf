@@ -32,23 +32,36 @@ resource "aws_instance" "projet_linux_server" {
   # Script d'installation automatique de Docker, Git et lancement du projet
   user_data = <<-EOF
     #!/bin/bash
-    # 1. Mise à jour et installation des outils
+    # 1. Mise à jour et installation des pré-requis
     apt-get update -y
-    apt-get install -y docker.io git
+    apt-get install -y ca-certificates curl gnupg lsb-release git
+
+    # 2. Ajout de la clé GPG officielle de Docker
+    mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+    # 3. Configuration du dépôt Docker
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+      $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    # 4. Installation de Docker et Docker Compose
+    apt-get update -y
+    apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+    # 5. Démarrage de Docker
     systemctl enable docker
     systemctl start docker
     usermod -aG docker ubuntu
-    apt-get install -y docker-compose-plugin
 
-    # 2. Récupération du code
+    # 6. Récupération du code
     cd /home/ubuntu
     git clone ${var.github_repo_url} projet
     cd projet
 
-    # 3. Lancement de l'application
-    # On attend que Docker soit prêt
+    # 7. Lancement de l'application
     sleep 10
-    docker compose up -d --build
+    sudo docker compose up -d --build
 
     # Fix permissions
     chown -R ubuntu:ubuntu /home/ubuntu/projet
