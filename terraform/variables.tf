@@ -7,6 +7,7 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
+
 variable "aws_ami_id" {
   description="c'est l'id de notre image ubunto"
   default="ami-0be40a46b4111e7f5"
