@@ -36,19 +36,26 @@ resource "aws_instance" "projet_linux_server" {
     apt-get update -y
     apt-get install -y git
 
-    # 2. Installation de Docker via Snap
+    # 2. Ajout de la mémoire SWAP (2Go) pour éviter le crash OOM (Exit 137) d'Angular
+    fallocate -l 2G /swapfile
+    chmod 600 /swapfile
+    mkswap /swapfile
+    swapon /swapfile
+    echo '/swapfile none swap sw 0 0' >> /etc/fstab
+
+    # 3. Installation de Docker via Snap
     snap install docker
     
     # On attend que Snap finisse de bien configurer Docker
     sleep 10
 
-    # 3. Récupération du code
+    # 4. Récupération du code
     cd /home/ubuntu
     git clone -b reda-dev ${var.github_repo_url} projet
     cd projet
 
-    # 4. Lancement de l'application
-    sudo docker compose up -d --build
+    # 5. Lancement de l'application
+    sudo docker compose up -d
 
     # Fix permissions
     chown -R ubuntu:ubuntu /home/ubuntu/projet
