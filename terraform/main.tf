@@ -29,38 +29,25 @@ resource "aws_instance" "projet_linux_server" {
     volume_type = "gp2"
   }
 
-  # Script d'installation automatique de Docker, Git et lancement du projet
+  # Script d'installation automatique via Snap (Idéal pour Ubuntu très récent)
   user_data = <<-EOF
     #!/bin/bash
-    # 1. Mise à jour et installation des pré-requis
+    # 1. Mise à jour
     apt-get update -y
-    apt-get install -y ca-certificates curl gnupg lsb-release git
+    apt-get install -y git
 
-    # 2. Ajout de la clé GPG officielle de Docker
-    mkdir -p /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    # 2. Installation de Docker via Snap
+    snap install docker
+    
+    # On attend que Snap finisse de bien configurer Docker
+    sleep 10
 
-    # 3. Configuration du dépôt Docker
-    echo \
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-      $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-    # 4. Installation de Docker et Docker Compose
-    apt-get update -y
-    apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-    # 5. Démarrage de Docker
-    systemctl enable docker
-    systemctl start docker
-    usermod -aG docker ubuntu
-
-    # 6. Récupération du code
+    # 3. Récupération du code
     cd /home/ubuntu
     git clone -b reda-dev ${var.github_repo_url} projet
     cd projet
 
-    # 7. Lancement de l'application
-    sleep 10
+    # 4. Lancement de l'application
     sudo docker compose up -d --build
 
     # Fix permissions
