@@ -3,6 +3,7 @@ services:
   backend:
     image: reda7856/linux-project:backend-v1
     container_name: laravel_app
+    command: php-fpm
     working_dir: /var/www
     volumes:
       - storage_data:/var/www/storage

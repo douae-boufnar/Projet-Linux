@@ -40,3 +40,4 @@ EXPOSE 9000
 
 # Lancer PHP-FPM via entrypoint (reapplique les permissions au démarrage)
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["php-fpm"]
