@@ -15,7 +15,7 @@ variable "aws_ami_id" {
 
 variable "key_name" {
   description = "Nom de la Key Pair SSH"
-  default     = "projet-linux-key"
+  default     = "terraform-ec2"
 }
 variable "project_name" {
   description = "Nom du projet"

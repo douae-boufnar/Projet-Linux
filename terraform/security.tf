@@ -8,7 +8,7 @@ resource "aws_security_group" "projet_linux_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["105.155.49.116"]
+    cidr_blocks = ["41.249.68.211/32"]
   }
 
   # HTTP - Trafic Web Principal (Nginx Reverse Proxy)

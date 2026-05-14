@@ -12,7 +12,7 @@ output "public_ip" {
 
 output "ssh_command" {
   description = "Commande SSH pour se connecter au serveur"
-  value       = "ssh -i ~/.ssh/projet-linux-key ubuntu@${aws_instance.projet_linux_server.public_ip}"
+  value       = "ssh -i ~/.ssh/terraform-ec2.pem ubuntu@${aws_instance.projet_linux_server.public_ip}"
 }
 
 output "app_url" {
