@@ -70,3 +70,5 @@ networks:
 
 volumes:
   mysql_data:
+  storage_data:
+  bootstrap_cache:
