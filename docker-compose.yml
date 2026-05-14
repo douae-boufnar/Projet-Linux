@@ -33,7 +33,6 @@ services:
     image : reda7856/linux-project:Angular_v2
     container_name: angular_app
     restart: always
-    # Le port n'est plus exposé à l'extérieur. Nginx s'en charge.
     networks:
       - laravel
 
@@ -71,5 +70,3 @@ networks:
 
 volumes:
   mysql_data:
-  storage_data:
-  bootstrap_cache:
