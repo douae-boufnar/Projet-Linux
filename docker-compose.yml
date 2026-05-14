@@ -3,7 +3,7 @@ services:
   backend:
     image: reda7856/linux-project:backend-v1
     container_name: laravel_app
-    command : php-fpm
+    command: php-fpm
     working_dir: /var/www
     volumes:
       - storage_data:/var/www/storage
@@ -48,6 +48,7 @@ services:
     # Le port n'est plus exposé à l'extérieur pour plus de sécurité.
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - laravel
 
