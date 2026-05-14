@@ -1,7 +1,7 @@
 services:
 
   backend:
-    image: ayadev24/linux-project:backend-v1
+    image: reda7856/linux-project:backend-v1
     container_name: laravel_app
     working_dir: /var/www
     volumes:
@@ -30,7 +30,7 @@ services:
       - laravel
 
   frontend:
-    image : ayadev24/linux-project:Angular_v2
+    image : reda7856/linux-project:Angular_v2
     container_name: angular_app
     restart: always
     # Le port n'est plus exposé à l'extérieur. Nginx s'en charge.
@@ -38,7 +38,7 @@ services:
       - laravel
 
   mysql:
-    image: ayadev24/linux-project:sql-v1
+    image: reda7856/linux-project:sql-v1
     container_name: laravel_db
     restart: always
     environment:
