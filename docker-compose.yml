@@ -3,6 +3,7 @@ services:
   backend:
     image: reda7856/linux-project:backend-v1
     container_name: laravel_app
+    command : php-fpm
     working_dir: /var/www
     volumes:
       - storage_data:/var/www/storage
@@ -72,8 +73,4 @@ networks:
 volumes:
   mysql_data:
   storage_data:
-<<<<<<< HEAD
   bootstrap_cache:
-=======
-  bootstrap_cache:
->>>>>>> 51e86c0ef46aaf9cc415962edf5e5239e293fc7f
