@@ -1,0 +1,172 @@
+name: CD - Terraform Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action Terraform à effectuer'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+
+env:
+  TF_VERSION: '1.7.5'
+  AWS_REGION: 'eu-west-3'
+
+jobs:
+  terraform-lint:
+    name: 🔍 Lint & Validate Terraform
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Installer Terraform ${{ env.TF_VERSION }}
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: 🎨 Vérifier le format (terraform fmt)
+        run: terraform fmt -check -recursive
+        continue-on-error: true
+
+      - name: 🔧 Initialiser Terraform (sans backend distant)
+        run: terraform init -backend=false
+
+      - name: ✅ Valider la configuration
+        run: terraform validate
+
+  terraform-plan:
+    name: 📋 Terraform Plan
+    runs-on: ubuntu-latest
+    needs: terraform-lint
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    defaults:
+      run:
+        working-directory: ./terraform
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Installer Terraform ${{ env.TF_VERSION }}
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: 🔐 Configurer les credentials AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: 🔧 Initialiser Terraform
+        run: terraform init
+
+      - name: 📋 Terraform Plan
+        id: plan
+        run: |
+          terraform plan \
+            -var="github_repo_url=${{ vars.GITHUB_REPO_URL || 'https://github.com/douae-boufnar/Projet-Linux' }}" \
+            -no-color \
+            -out=tfplan 2>&1 | tee plan_output.txt
+        continue-on-error: true
+
+      - name: 💬 Commenter le Plan sur la PR
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const planOutput = fs.readFileSync('terraform/plan_output.txt', 'utf8');
+            const maxLen = 60000;
+            const truncated = planOutput.length > maxLen
+              ? planOutput.substring(0, maxLen) + '\n\n... (tronqué)'
+              : planOutput;
+
+            const body = `## 📋 Résultat du Terraform Plan
+
+            \`\`\`hcl
+            ${truncated}
+            \`\`\`
+
+            > ⚠️ Ce plan sera appliqué automatiquement lors du merge sur \`main\`.
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: ❌ Échouer si le plan a échoué
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+  terraform-apply:
+    name: 🚀 Terraform Apply (Deploy AWS)
+    runs-on: ubuntu-latest
+    needs: terraform-lint
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production
+    defaults:
+      run:
+        working-directory: ./terraform
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Installer Terraform ${{ env.TF_VERSION }}
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: 🔐 Configurer les credentials AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: 🔧 Initialiser Terraform
+        run: terraform init
+
+      - name: 🚀 Terraform Apply (déploiement automatique)
+        run: |
+          terraform apply \
+            -var="github_repo_url=${{ vars.GITHUB_REPO_URL || 'https://github.com/douae-boufnar/Projet-Linux' }}" \
+            -auto-approve \
+            -no-color
+
+      - name: 📤 Afficher les Outputs
+        run: terraform output
+
+      - name: 💾 Résumé
+        run: |
+          PUBLIC_IP=$(terraform output -raw public_ip 2>/dev/null || echo "N/A")
+          echo "### 🌐 Application déployée !" >> $GITHUB_STEP_SUMMARY
+          echo "| Ressource | Valeur |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🖥️ IP Publique | \`$PUBLIC_IP\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🌍 URL App | http://$PUBLIC_IP |" >> $GITHUB_STEP_SUMMARY

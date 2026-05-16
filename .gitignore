@@ -1,4 +1,22 @@
+# ── Terraform ───────────────────────────────────────
 .terraform/
 *.tfstate
 *.tfstate.*
-.terraform.lock.hcl
+*.tfvars
+*.tfvars.json
+
+# ⚠️  NE PAS ignorer .terraform.lock.hcl
+# Ce fichier doit être commité pour le CI.
+
+# ── Environnements / Secrets ─────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Node / npm ───────────────────────────────────────
+node_modules/
+
+# ── Laravel ──────────────────────────────────────────
+mon-projet-backend/vendor/
+mon-projet-backend/storage/logs/*.log
+mon-projet-backend/.env

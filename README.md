@@ -1,42 +1,25 @@
-# Plateforme Web DevOps avec Docker
+# 🐧 Projet Linux — Plateforme Web DevOps
 
-## Description
-Ce projet consiste à développer une application web en utilisant les pratiques DevOps.
-L'objectif est de standardiser l’environnement, faciliter la collaboration et automatiser le déploiement.
+Application web full-stack déployée automatiquement sur AWS EC2 via un pipeline CI/CD complet (GitHub Actions + Terraform).
 
-## Objectifs
-- Environnement collaboratif
-- Conteneurisation avec Docker
-- Orchestration avec Docker Compose
-- Automatisation avec CI/CD
-- Déploiement cloud
+---
 
-## Technologies
-- Backend : Laravel (PHP)
-- Frontend : Angular
-- Base de données : MySQL
-- Docker / Docker Compose
-- Terraform
-- GitHub Actions
+## 🏗️ Architecture
+- **Backend** : Laravel 10 (PHP 8.2)
+- **Frontend** : Angular 17
+- **Base de données** : MySQL 8.0
+- **Infrastructure** : AWS EC2 (Terraform)
+- **CI/CD** : GitHub Actions
 
-## Architecture
-L'application est composée de :
-- Frontend (Angular)
-- Backend (Laravel API)
-- Base de données (MySQL)
+---
 
-## CI/CD
-Pipeline pour :
-- tests
-- build Docker
-- déploiement automatique
+## 🔄 Pipeline CI/CD
+1. **Tests** : Tests automatiques Laravel & Angular à chaque push.
+2. **Infrastructure** : Terraform valide et déploie l'infrastructure sur AWS.
+3. **Déploiement** : Docker Compose lance les conteneurs sur l'instance EC2.
 
-## Équipe
-- Reda : Backend & Déploiement
-- Aymen : Frontend
-- Douae : Full Stack
-- Aya : Infrastructure
-- Fatime-zahra : Backend API
+---
 
-## Documentation
-La documentation sera mise à jour régulièrement.
+## 📂 Documentation
+- [Guide de configuration des Secrets](./SETUP_SECRETS.md)
+- [Configuration Terraform](./terraform/README.md)
