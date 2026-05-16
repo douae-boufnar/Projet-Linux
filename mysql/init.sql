@@ -63,8 +63,7 @@ CREATE TABLE `livres` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Déchargement des données de la table `livres`
---
+-- Déchargement de
 INSERT INTO `livres` (`id`, `titre`, `auteur`, `description`, `image`, `contenu`, `category_id`, `created_at`) VALUES
 (1, 'Developpement en Informatique', 'Michel Gines', 'Le guide ultime pour maitriser le framework PHP le plus populaire.', 'https://images.epagine.fr/134/9782409029134_1_75.jpg', 'file:///C:/Users/pc/Downloads/sys.pdf', 1, '2026-04-28 15:19:20'),
 (13, 'Woman Down', 'colleen hoover', 'Her words used to set the page on fire. But a viral backlash over her latest film adaptation forced Petra Rose to take a hiatus, resulting in missed deadlines and an overdue mortgage. Branded a fraud and fame-hungry opportunist, she learned the hard way what happens when the internet turns on you. And she’s been uninspired to write ever since.', 'https://www.colleenhoover.com/cdn/shop/files/WD_image_1399x2173.jpg?v=1768239181', 'https://www.google.com/url?sa=t&source=web&rct=j&url=https%3A%2F%2Fwww.colleenhoover.com%2Fproducts%2Fwoman-down&ved=0CBYQjRxqFwoTCKiar6PHtpQDFQAAAAAdAAAAABAG&opi=89978449', 3, '2026-05-13 15:18:07'),
