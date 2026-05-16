@@ -12,6 +12,9 @@ Aller sur GitHub → **Settings → Secrets and variables → Actions → New re
 |---|---|---|
 | `AWS_ACCESS_KEY_ID` | Clé d'accès AWS IAM | `AKIAIOSFODNN7EXAMPLE` |
 | `AWS_SECRET_ACCESS_KEY` | Clé secrète AWS IAM | `wJalrXUtnFEMI/K7MDENG/...` |
+| `SSH_PRIVATE_KEY` | Contenu du fichier `.pem` pour SSH | `-----BEGIN RSA PRIVATE KEY-----...` |
+| `DOCKERHUB_USERNAME` | Votre nom d'utilisateur Docker Hub | `reda7856` |
+| `DOCKERHUB_TOKEN` | Access Token Docker Hub (PAT) | `dckr_pat_...` |
 
 ---
 
@@ -64,4 +67,24 @@ Push/PR
    │                                         CD : Terraform Apply
    │                                              │
    │                                              └─► Instance EC2 AWS
+   │
+   └─► CD : SSH Deploy (Docker Update)
+         │
+         └─► Conteneurs mis à jour sur EC2
 ```
+
+---
+
+## 🔑 Obtenir la clé SSH (`SSH_PRIVATE_KEY`)
+...
+4. Collez-le dans un nouveau secret GitHub nommé `SSH_PRIVATE_KEY`.
+
+---
+
+## 🐳 Obtenir un Token Docker Hub (`DOCKERHUB_TOKEN`)
+
+1. Connectez-vous sur [Docker Hub](https://hub.docker.com/).
+2. Allez dans **Account Settings** -> **Security**.
+3. Cliquez sur **New Access Token**.
+4. Donnez un nom (ex: `github-actions`) et générez-le.
+5. Copiez le token et ajoutez-le en secret GitHub sous le nom `DOCKERHUB_TOKEN`.
