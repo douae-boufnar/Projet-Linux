@@ -1,4 +1,4 @@
-name: CD - Master Pipeline (Infrastructure & Deploy)
+name: CD - Master Pipeline (Deploy)
 
 on:
   workflow_run:
@@ -10,12 +10,10 @@ on:
   workflow_dispatch:
 
 env:
-  TF_VERSION: '1.7.5'
-  AWS_REGION: 'eu-west-3'
   DOCKERHUB_REPO: 'reda7856/linux-project'
 
 jobs:
-  # 2. BUILD & PUSH DOCKER IMAGES
+  # 1. BUILD & PUSH DOCKER IMAGES
   build-push:
     name: 🐳 Build & Push Docker Images
     runs-on: ubuntu-latest
@@ -44,52 +42,10 @@ jobs:
           push: true
           tags: ${{ env.DOCKERHUB_REPO }}:frontend-latest
 
-  # 3. INFRASTRUCTURE (TERRAFORM)
-  infrastructure:
-    name: 🚀 Terraform Infrastructure (AWS)
-    needs: build-push
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
-    environment: production
-    outputs:
-      public_ip: ${{ steps.get_ip.outputs.ip }}
-    steps:
-      - name: 📥 Checkout
-        uses: actions/checkout@v4
-
-      - name: ⚙️ Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: 🔐 AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: 🔧 Init
-        working-directory: ./terraform
-        run: terraform init
-
-      - name: 🚀 Apply
-        working-directory: ./terraform
-        run: |
-          terraform apply \
-            -var="github_repo_url=https://github.com/douae-boufnar/Projet-Linux" \
-            -auto-approve \
-            -no-color
-
-      - name: 🛰️ Get IP
-        id: get_ip
-        working-directory: ./terraform
-        run: echo "ip=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
-
-  # 4. DEPLOY (SSH)
+  # 2. DEPLOY (SSH)
   deploy:
     name: 🚢 Application Deployment
-    needs: [infrastructure, build-push]
+    needs: build-push
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     steps:
@@ -99,7 +55,7 @@ jobs:
       - name: 🚀 Deploy via SSH
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ needs.infrastructure.outputs.public_ip }}
+          host: ${{ secrets.SERVER_IP }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
