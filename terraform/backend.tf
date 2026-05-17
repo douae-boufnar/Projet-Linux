@@ -1,14 +1,13 @@
 # Configuration du backend Terraform (état distant)
 #
-# Par défaut le state est stocké LOCALEMENT.
-# Pour une démo de cours, laisser ce fichier tel quel (backend local) est acceptable.
+# L'état est maintenant stocké sur AWS S3 pour permettre 
+# le travail collaboratif et éviter de recréer l'infrastructure.
 #
-# OPTION A – Backend S3 (recommandé pour la prod)
-# terraform {
-#   backend "s3" {
-#     bucket         = "projet-linux-terraform-state"
-#     key            = "prod/terraform.tfstate"
-#     region         = "eu-west-3"
-#     encrypt        = true
-#   }
-# }
+terraform {
+  backend "s3" {
+    bucket         = "douae-projet-linux-terraform-state"
+    key            = "prod/terraform.tfstate"
+    region         = "eu-west-3"
+    encrypt        = true
+  }
+}
