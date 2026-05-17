@@ -22,7 +22,7 @@ jobs:
         run: composer install --no-interaction --prefer-dist
       - name: ✅ Lancer les tests
         working-directory: ./mon-projet-backend
-        run: php artisan test --pass-with-no-tests
+        run: php artisan test
 
   test-angular:
     name: 🧪 Tests Angular (Frontend)
