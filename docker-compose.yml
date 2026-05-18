@@ -57,11 +57,12 @@ services:
     container_name: laravel_phpmyadmin
     restart: always
     # Le port n'est plus exposé. Accessible via Nginx sur /phpmyadmin/
+    ports :
+      - "8081:80"
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: root
-      PMA_ABSOLUTE_URI: /phpmyadmin/
     depends_on:
       - mysql
     networks:
