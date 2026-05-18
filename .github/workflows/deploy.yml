@@ -55,11 +55,15 @@ jobs:
       - name: 🛠️ Installer Terraform sur le runner
         uses: hashicorp/setup-terraform@v3
 
+      - name: 🔐 Connexion à AWS (Configuration des credentials)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-3
+
       - name: ⚙️ Configuration du Security Group avec Terraform
         working-directory: ./terraform
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           terraform init
           terraform apply -auto-approve
