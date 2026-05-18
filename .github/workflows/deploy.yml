@@ -52,6 +52,15 @@ jobs:
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
+      - name: ⚙️ Configuration du Security Group avec Terraform
+        working-directory: ./terraform
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          terraform init
+          terraform apply -auto-approve
+
       - name: 🚀 Deploy via SSH
         uses: appleboy/ssh-action@master
         with:
