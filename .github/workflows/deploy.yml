@@ -28,6 +28,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: 📝 Créer le fichier .env pour le backend
+        working-directory: ./mon-projet-backend
+        run: |
+          cp .env.example .env
+          sed -i 's|DB_HOST=127.0.0.1|DB_HOST=mysql|g' .env
+          sed -i 's|DB_PASSWORD=|DB_PASSWORD=root|g' .env
+          echo "APP_KEY=base64:6W+deEHpcajwq/7ePWCLToMwXD3NPu9kQG+RNjdM3vA=" >> .env
+
       - name: 🏗️ Build & Push Backend
         uses: docker/build-push-action@v5
         with:
