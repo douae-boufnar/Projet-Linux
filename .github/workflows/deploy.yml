@@ -52,6 +52,9 @@ jobs:
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
+      - name: 🛠️ Installer Terraform sur le runner
+        uses: hashicorp/setup-terraform@v3
+
       - name: ⚙️ Configuration du Security Group avec Terraform
         working-directory: ./terraform
         env:
