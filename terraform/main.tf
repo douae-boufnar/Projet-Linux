@@ -51,7 +51,7 @@ resource "aws_instance" "projet_linux_server" {
 
     # 4. Récupération du code
     cd /home/ubuntu
-    git clone -b reda-dev ${var.github_repo_url} projet
+    git clone -b test ${var.github_repo_url} projet
     cd projet
 
     # 5. Lancement de l'application
