@@ -20,7 +20,7 @@ jobs:
       - name:  Installer les dépendances
         working-directory: ./mon-projet-backend
         run: composer install --no-interaction --prefer-dist
-      - name: ⚙️ Configurer l'environnement
+      - name:  Configurer l'environnement
         working-directory: ./mon-projet-backend
         run: |
           cp .env.example .env
