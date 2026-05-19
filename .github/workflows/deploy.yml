@@ -94,6 +94,11 @@ jobs:
             sudo docker compose pull
             sudo docker compose up -d --build
             sudo docker compose restart nginx
+            
+            # Réinitialiser la base de données pour appliquer tous les changements de init.sql
+            sudo docker exec -i laravel_db mysql -u root -proot -e "DROP DATABASE IF EXISTS laravel_db; CREATE DATABASE laravel_db;"
+            sudo docker exec -i laravel_db mysql -u root -proot laravel_db < mysql/init.sql
+            
             sudo docker image prune -f
 
             echo "=== STATUS DES CONTENEURS ==="
