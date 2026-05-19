@@ -84,6 +84,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/projet
+            git reset --hard
             git pull origin main
             
             # Utiliser les nouvelles images
