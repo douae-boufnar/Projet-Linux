@@ -44,7 +44,7 @@ L'objectif est de résoudre les problèmes d'hétérogénéité des environnemen
 ---
 
 ## 👤 Équipe (Exemple de répartition)
-- **Chef de Projet** : [Nom] (Gestion Jira/Notion & Validation)
-- **Dév Backend / Docker** : [Nom] (Images Docker & API)
-- **Dév Frontend** : [Nom] (Interface Angular)
-- **Responsable DevOps** : [Nom] (GitHub Actions & Terraform)
+- **Chef de Projet** : DAHBI AYA (Gestion Jira/Notion & Validation)
+- **Dév Backend / frontend** : EL ASRI FATIMAZAHRA (Images Docker & API)
+- **responsable terraform** : REDA ZAKARIYA
+- **Responsable DevOps** : DOUAE BOUFNAR (GitHub Actions & Terraform)
