@@ -8,16 +8,16 @@ on:
 
 jobs:
   test-laravel:
-    name: 🧪 Tests Laravel (Backend)
+    name:  Tests Laravel (Backend)
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout du code
+      - name:  Checkout du code
         uses: actions/checkout@v4
-      - name: 🐘 Installer PHP 8.2
+      - name:  Installer PHP 8.2
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-      - name: 📦 Installer les dépendances
+      - name:  Installer les dépendances
         working-directory: ./mon-projet-backend
         run: composer install --no-interaction --prefer-dist
       - name: ⚙️ Configurer l'environnement
@@ -25,23 +25,23 @@ jobs:
         run: |
           cp .env.example .env
           php artisan key:generate
-      - name: ✅ Lancer les tests
+      - name:  Lancer les tests
         working-directory: ./mon-projet-backend
         run: php artisan test
 
   test-angular:
-    name: 🧪 Tests Angular (Frontend)
+    name:  Tests Angular (Frontend)
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout du code
+      - name:  Checkout du code
         uses: actions/checkout@v4
-      - name: 🟢 Installer Node.js 20
+      - name:  Installer Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: 📦 Installer les dépendances
+      - name:  Installer les dépendances
         working-directory: ./frontend
         run: npm install
-      - name: ✅ Lancer les tests
+      - name:  Lancer les tests
         working-directory: ./frontend
         run: npm test -- --watch=false --browsers=ChromeHeadless || echo "Tests skipped or failed"
