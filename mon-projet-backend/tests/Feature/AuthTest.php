@@ -9,7 +9,6 @@ class AuthTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
     public function register_user()
     {
         $response = $this->postJson('/api/register', [
@@ -27,7 +26,7 @@ class AuthTest extends TestCase
         ]);
     }
 
-    /** @test */
+
     public function login_user()
     {
         // Mot de passe en clair car votre controller
@@ -36,7 +35,7 @@ class AuthTest extends TestCase
             'nom'      => 'Test',
             'prenom'   => 'User',
             'email'    => 'login@example.com',
-            'password' => 'password123',   // ← en clair, pas Hash::make
+            'password' => 'password123',   
             'role'     => 'user',
         ]);
 
@@ -51,7 +50,7 @@ class AuthTest extends TestCase
         ]);
     }
 
-    /** @test */
+ 
     public function login_fail()
     {
         $response = $this->postJson('/api/login', [
