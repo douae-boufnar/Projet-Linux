@@ -15,20 +15,20 @@ env:
 jobs:
   # 1. BUILD & PUSH DOCKER IMAGES
   build-push:
-    name: 🐳 Build & Push Docker Images
+    name:  Build & Push Docker Images
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     steps:
-      - name: 📥 Checkout
+      - name:  Checkout
         uses: actions/checkout@v4
 
-      - name: 🔐 Login to Docker Hub
+      - name:  Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 📝 Créer le fichier .env pour le backend
+      - name:  Créer le fichier .env pour le backend
         working-directory: ./mon-projet-backend
         run: |
           cp .env.example .env
@@ -36,7 +36,7 @@ jobs:
           sed -i 's|DB_PASSWORD=|DB_PASSWORD=root|g' .env
           echo "APP_KEY=base64:6W+deEHpcajwq/7ePWCLToMwXD3NPu9kQG+RNjdM3vA=" >> .env
 
-      - name: 🏗️ Build & Push Backend
+      - name:  Build & Push Backend
         uses: docker/build-push-action@v5
         with:
           context: ./mon-projet-backend
@@ -52,31 +52,31 @@ jobs:
 
   # 2. DEPLOY (SSH)
   deploy:
-    name: 🚢 Application Deployment
+    name:  Application Deployment
     needs: build-push
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     steps:
-      - name: 📥 Checkout
+      - name:  Checkout
         uses: actions/checkout@v4
 
-      - name: 🛠️ Installer Terraform sur le runner
+      - name:  Installer Terraform sur le runner
         uses: hashicorp/setup-terraform@v3
 
-      - name: 🔐 Connexion à AWS (Configuration des credentials)
+      - name:  Connexion à AWS (Configuration des credentials)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-3
 
-      - name: ⚙️ Configuration du Security Group avec Terraform
+      - name:  Configuration du Security Group avec Terraform
         working-directory: ./terraform
         run: |
           terraform init
           terraform apply -auto-approve
 
-      - name: 🚀 Deploy via SSH
+      - name:  Deploy via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
