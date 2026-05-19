@@ -155,7 +155,8 @@ export class AdminDashboardComponent implements OnInit {
       2: 'Sciences',
       3: 'Littérature',
       4: 'Histoire',
-      5: 'Economie'
+      5: 'Economie',
+      6: 'Romance'
     };
     return categories[Number(id)] || 'Inconnue';
   }

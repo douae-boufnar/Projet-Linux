@@ -43,7 +43,8 @@ INSERT INTO `categories` (`id`, `nom`, `created_at`) VALUES
 (2, 'Sciences', '2026-04-28 15:09:46'),
 (3, 'Litterature', '2026-04-28 15:09:46'),
 (4, 'Histoire', '2026-04-28 15:09:46'),
-(5, 'Economie', '2026-04-28 15:09:46');
+(5, 'Economie', '2026-04-28 15:09:46'),
+(6, 'Romance', '2026-04-28 15:09:46');
 
 -- --------------------------------------------------------
 
@@ -179,7 +180,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `livres`

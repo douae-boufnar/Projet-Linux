@@ -12,7 +12,7 @@ import { filter } from 'rxjs/operators';
   styleUrl: './app.css'
 })
 export class App implements OnInit {
-  title = 'Biblio GI';
+  title = 'Babelio';
   showNavbar = false;
   userName = '';
   userRole = ''; 

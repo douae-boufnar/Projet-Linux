@@ -96,6 +96,7 @@ export class CatalogComponent implements OnInit {
       'Littérature': '📚',
       'Histoire': '🏛️',
       'Economie': '📈',
+      'Romance': '💖',
     };
     return map[name] || '📁';
   }
