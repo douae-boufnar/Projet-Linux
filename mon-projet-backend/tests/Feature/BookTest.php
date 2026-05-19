@@ -21,7 +21,7 @@ class BookTest extends TestCase
         Category::factory()->create(['id' => 1]);
     }
 
-    /** @test */
+
     public function it_can_list_all_books()
     {
         Livre::factory()->count(3)->create();
@@ -32,7 +32,7 @@ class BookTest extends TestCase
                  ->assertJsonCount(3);
     }
 
-    /** @test */
+
     public function it_can_show_a_single_book()
     {
         $book = Livre::factory()->create();
@@ -43,7 +43,7 @@ class BookTest extends TestCase
                  ->assertJsonPath('titre', $book->titre);
     }
 
-    /** @test */
+
     public function it_can_create_a_book()
     {
         Storage::fake('public');
@@ -68,7 +68,7 @@ class BookTest extends TestCase
         ]);
     }
 
-    /** @test */
+
     public function it_can_update_a_book()
     {
         $book = Livre::factory()->create();
@@ -90,7 +90,7 @@ class BookTest extends TestCase
         ]);
     }
 
-    /** @test */
+
     public function it_can_delete_a_book()
     {
         $book = Livre::factory()->create();
@@ -101,7 +101,6 @@ class BookTest extends TestCase
         $this->assertDatabaseMissing('livres', ['id' => $book->id]);
     }
 
-    /** @test */
     public function guest_cannot_access_protected_read_route()
     {
         $book = Livre::factory()->create();
@@ -111,7 +110,7 @@ class BookTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
+
     public function authenticated_user_can_access_protected_read_route()
     {
         $user = User::factory()->create();
