@@ -14,7 +14,7 @@ services:
     networks:
       - laravel
 
-  # Le Nginx PRINCIPAL qui sert de Reverse Proxy global
+  # Le Nginx PRINCIPAL qui sert de Reverse Proxy globa
   nginx:
     image: nginx:alpine
     container_name: main_nginx
