@@ -82,7 +82,7 @@ INSERT INTO `livres` (`id`, `titre`, `auteur`, `description`, `image`, `contenu`
 (27, 'Informatique et sciences du numérique', 'Gilles Dowek', 'Le livre Informatique et sciences du numérique (souvent associé à la spécialité NSI ou ISN) est un manuel complet conçu pour les lycéens, axé sur les quatre piliers : algorithmes, langages (principalement Python), données et machines. Il allie théorie et pratique avec des activités, TP, et exercices, souvent basés sur la version 3 de Python.', 'https://servimg.eyrolles.com/static/media/5435/9782212135435_internet_h1400.jpg', 'https://wiki.inria.fr/wikis/sciencinfolycee/images/a/a7/Informatique_et_Sciences_du_Num%C3%A9rique_-_Sp%C3%A9cialit%C3%A9_ISN_en_Terminale_S._version_Python.pdf', 1, '2026-05-13 17:58:11');
 
 -- --------------------------------------------------------
-
+-
 --
 -- Structure de la table `personal_access_tokens`
 --
